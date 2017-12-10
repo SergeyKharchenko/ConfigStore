@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
@@ -7,11 +6,13 @@ using ConfigStore.Api.Dto.Input;
 using ConfigStore.Api.Dto.Output;
 using ConfigStore.Api.Enums;
 using ConfigStore.Api.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConfigStore.Api.Controllers {
     [Route("api/[controller]")] 
+    [AllowAnonymous]
     public class ApplicationController : Controller {
         private readonly ConfigStoreContext _context;
 
@@ -26,7 +27,7 @@ namespace ConfigStore.Api.Controllers {
             }
             string name = registerApplicationDto.Name.ToLower();
             bool canRegisterApplication = !await _context.Applications.AnyAsync(app => Equals(app.Name, name));
-            return this.ToJson(new { canRegisterApplication });
+            return Json(new { canRegisterApplication });
         }
 
         [HttpPost("register")]
@@ -34,7 +35,6 @@ namespace ConfigStore.Api.Controllers {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
-
             string name = registerApplicationDto.Name.ToLower();
             Guid key = Guid.NewGuid();
             try {
@@ -44,9 +44,9 @@ namespace ConfigStore.Api.Controllers {
                 });
                 await _context.SaveChangesAsync();
             } catch (DbUpdateException e) when ((e.InnerException as SqlException)?.ErrorCode == -2146232060) {
-                return this.ToJson(ErrorDto.Create(ErrorCodes.ApplicationNameAleadyBusy));
+                return this.Json(ErrorDto.Create(ErrorCodes.ApplicationNameAleadyBusy));
             }
-            return this.ToJson(new { ApplicationKey = key });
+            return Json(new { ApplicationKey = key });
         }
     }
 }

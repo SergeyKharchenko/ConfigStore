@@ -8,13 +8,6 @@ using Newtonsoft.Json.Serialization;
 namespace ConfigStore.Api.Extensions {
     public static class ControllerExtensions {
         private const int ValidationErrorStatusCode = 422;
-        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        };
-
-        public static JsonResult ToJson(this Controller controller, object obj) {
-            return controller.Json(obj, JsonSerializerSettings);
-        }
 
         public static IActionResult ValidationError(this Controller controller) {
             return controller.StatusCode(ValidationErrorStatusCode, GetAllErrorMessages(controller));

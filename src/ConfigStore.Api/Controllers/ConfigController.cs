@@ -33,7 +33,7 @@ namespace ConfigStore.Api.Controllers {
                        .Select(secret => new KeyValuePair<string, string>(secret.SecretIdentifier.Name, secret.Value))
                        .ToList();
 
-            return this.ToJson(keyValuePairs);
+            return this.Json(keyValuePairs);
         }
 
         [HttpGet("keys")]
@@ -51,7 +51,7 @@ namespace ConfigStore.Api.Controllers {
                        .Select(key => new KeyValuePair<string, byte[]>(key.KeyIdentifier.Name, key.Key.N))
                        .ToList();
 
-            return this.ToJson(keyValuePairs);
+            return this.Json(keyValuePairs);
         }
 
         [HttpGet("{id}")]
