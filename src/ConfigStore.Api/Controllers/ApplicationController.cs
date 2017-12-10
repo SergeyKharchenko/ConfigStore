@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Net;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
 using ConfigStore.Api.Dto.Input;
@@ -21,21 +22,21 @@ namespace ConfigStore.Api.Controllers {
         }
 
         [HttpGet("canRegister")]
-        public async Task<IActionResult> CanRegisterApplication([FromQuery] RegisterApplicationDto registerApplicationDto) {
+        public async Task<IActionResult> CanRegister([FromQuery] ApplicationDto applicationDto) {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
-            string name = registerApplicationDto.Name.ToLower();
+            string name = applicationDto.Name.ToLower();
             bool canRegisterApplication = !await _context.Applications.AnyAsync(app => Equals(app.Name, name));
             return Json(new { canRegisterApplication });
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterApplication([FromBody] RegisterApplicationDto registerApplicationDto) {
+        public async Task<IActionResult> Register([FromBody] ApplicationDto applicationDto) {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
-            string name = registerApplicationDto.Name.ToLower();
+            string name = applicationDto.Name.ToLower();
             Guid key = Guid.NewGuid();
             try {
                 await _context.Applications.AddAsync(new Application {
@@ -47,6 +48,16 @@ namespace ConfigStore.Api.Controllers {
                 return this.Json(ErrorDto.Create(ErrorCodes.ApplicationNameAleadyBusy));
             }
             return Json(new { ApplicationKey = key });
+        }
+
+        [HttpGet("login")]
+        public async Task<IActionResult> Login([FromQuery] ApplicationDto applicationDto) {
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+            string name = applicationDto.Name.ToLower();
+            bool canLogin = !await _context.Applications.AnyAsync(app => Equals(app.Name, name));
+            return canLogin ? Ok() : StatusCode((int)HttpStatusCode.Unauthorized);
         }
     }
 }
