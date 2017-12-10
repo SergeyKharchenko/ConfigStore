@@ -40,7 +40,7 @@ namespace ConfigStore.Api.Controllers {
             try {
                 await _context.Applications.AddAsync(new Application {
                     Name = name,
-                    Key = Guid.NewGuid()
+                    Key = key
                 });
                 await _context.SaveChangesAsync();
             } catch (DbUpdateException e) when ((e.InnerException as SqlException)?.ErrorCode == -2146232060) {
