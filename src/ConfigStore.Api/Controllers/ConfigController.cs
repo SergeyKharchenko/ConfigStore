@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using ConfigStore.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Rest.Azure;
 
 namespace ConfigStore.Api.Controllers {
     [Route("api/[controller]")]
-    public class ConfigController : BaseApiController {
+    public class ConfigController : Controller {
         private readonly KeyVaultClient _client;
         private readonly IConfiguration _configuration;
 
@@ -35,7 +33,7 @@ namespace ConfigStore.Api.Controllers {
                        .Select(secret => new KeyValuePair<string, string>(secret.SecretIdentifier.Name, secret.Value))
                        .ToList();
 
-            return ToJson(keyValuePairs);
+            return this.ToJson(keyValuePairs);
         }
 
         [HttpGet("keys")]
@@ -53,7 +51,7 @@ namespace ConfigStore.Api.Controllers {
                        .Select(key => new KeyValuePair<string, byte[]>(key.KeyIdentifier.Name, key.Key.N))
                        .ToList();
 
-            return ToJson(keyValuePairs);
+            return this.ToJson(keyValuePairs);
         }
 
         [HttpGet("{id}")]

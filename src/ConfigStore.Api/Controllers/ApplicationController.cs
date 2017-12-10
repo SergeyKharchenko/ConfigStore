@@ -1,0 +1,52 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
+using ConfigStore.Api.Data;
+using ConfigStore.Api.Dto.Input;
+using ConfigStore.Api.Dto.Output;
+using ConfigStore.Api.Enums;
+using ConfigStore.Api.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace ConfigStore.Api.Controllers {
+    [Route("api/[controller]")] 
+    public class ApplicationController : Controller {
+        private readonly ConfigStoreContext _context;
+
+        public ApplicationController(ConfigStoreContext context) {
+            _context = context;
+        }
+
+        [HttpGet("canRegister")]
+        public async Task<IActionResult> CanRegisterApplication([FromQuery] RegisterApplicationDto registerApplicationDto) {
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+            string name = registerApplicationDto.Name.ToLower();
+            bool canRegisterApplication = !await _context.Applications.AnyAsync(app => Equals(app.Name, name));
+            return this.ToJson(new { canRegisterApplication });
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterApplication([FromBody] RegisterApplicationDto registerApplicationDto) {
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+
+            string name = registerApplicationDto.Name.ToLower();
+            Guid key = Guid.NewGuid();
+            try {
+                await _context.Applications.AddAsync(new Application {
+                    Name = name,
+                    Key = Guid.NewGuid()
+                });
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateException e) when ((e.InnerException as SqlException)?.ErrorCode == -2146232060) {
+                return this.ToJson(ErrorDto.Create(ErrorCodes.ApplicationNameAleadyBusy));
+            }
+            return this.ToJson(new { ApplicationKey = key });
+        }
+    }
+}
