@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConfigStore.Api.Dto.Input;
 using ConfigStore.Api.Extensions;
+using ConfigStore.Api.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Rest.Azure;
 
 namespace ConfigStore.Api.Controllers {
     [Route("api/[controller]")]
@@ -20,20 +24,43 @@ namespace ConfigStore.Api.Controllers {
 
         [HttpGet("secrets")]
         public async Task<IActionResult> GetSecrets() {
-            List<Task<SecretBundle>> ecretTasks =
+            List<Task<SecretBundle>> secretTasks =
                 (await _client.GetSecretsAsync(_configuration["KeyVaultUrl"]))
                 .AsEnumerable()
                 .Select(async secretItem => await _client.GetSecretAsync(secretItem.Id))
                 .ToList();
 
-            await Task.WhenAll(ecretTasks);
+            await Task.WhenAll(secretTasks);
 
             List<KeyValuePair<string, string>> keyValuePairs =
-                ecretTasks.Select(secret => secret.Result)
-                       .Select(secret => new KeyValuePair<string, string>(secret.SecretIdentifier.Name, secret.Value))
-                       .ToList();
+                secretTasks.Select(secret => secret.Result)
+                          .Select(secret => new KeyValuePair<string, string>(secret.SecretIdentifier.Name, secret.Value))
+                          .ToList();
 
-            return this.Json(keyValuePairs);
+            return Json(keyValuePairs);
+        }
+
+        [HttpGet("applicationSecrets")]
+        public async Task<IActionResult> GetApplicationSecrets() {
+            IPage<SecretItem> secretItems = await _client.GetSecretsAsync(_configuration["KeyVaultUrl"]);
+
+            string prefix = ConfigNameResolver.CreatePrefix(this.GetApplicationName());
+
+            IEnumerable<string> secretNames =
+                from item in secretItems
+                let index = item.Identifier.Name.IndexOf(prefix, StringComparison.InvariantCultureIgnoreCase)
+                where index != -1
+                let configName = item.Identifier.Name.Remove(index, prefix.Length)
+                select configName;
+
+            return Json(secretNames);
+        }
+
+        [HttpPost("applicationSecrets")]
+        public async Task<IActionResult> AddApplicationSecret([FromBody] AddConfigDto addConfigDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), addConfigDto.ConfigName);
+            await _client.SetSecretAsync(_configuration["KeyVaultUrl"], configName, addConfigDto.ConfigValue);
+            return Ok();
         }
 
         [HttpGet("keys")]
@@ -51,15 +78,7 @@ namespace ConfigStore.Api.Controllers {
                        .Select(key => new KeyValuePair<string, byte[]>(key.KeyIdentifier.Name, key.Key.N))
                        .ToList();
 
-            return this.Json(keyValuePairs);
+            return Json(keyValuePairs);
         }
-
-        [HttpGet("{id}")]
-        public string Get(int id) {
-            return "value";
-        }
-
-        [HttpPost]
-        public void Post([FromBody] string value) { }
     }
 }

@@ -25,5 +25,9 @@ namespace ConfigStore.Api.Extensions {
             }                        
             return errors;
         }
+
+        public static string GetApplicationName(this Controller controller) {
+            return controller.HttpContext.User.Identity.Name;
+        }
     }
 }

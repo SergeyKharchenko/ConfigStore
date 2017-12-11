@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 namespace ConfigStore.Api.Authorization {
     public class AuthorizationHandler : AuthorizationHandler<AuthorizationHandler>, IAuthorizationRequirement {
         public const string ApplicationKeyHeaderName = "CS-Application-Key";
-        private readonly Func<Func<ConfigStoreContext, bool>, bool> _executeActionWithContext;
+        private readonly Func<Func<ConfigStoreContext, Application>, Application> _executeActionWithContext;
 
-        public AuthorizationHandler(Func<Func<ConfigStoreContext, bool>, bool> executeActionWithContext) {
+        public AuthorizationHandler(Func<Func<ConfigStoreContext, Application>, Application> executeActionWithContext) {
             _executeActionWithContext = executeActionWithContext;
         }
 
@@ -29,11 +30,13 @@ namespace ConfigStore.Api.Authorization {
                 return Task.CompletedTask;
             }
 
-            bool isAppRegistered = _executeActionWithContext(dbContext => 
-                dbContext.Applications.Any(app => Equals(app.Key, key)));
-            if (!isAppRegistered) {
+            Application application = _executeActionWithContext(dbContext => 
+                dbContext.Applications.FirstOrDefault(app => Equals(app.Key, key)));
+            if (application == null) {
                 return Task.CompletedTask;
             }
+
+            filterContext.HttpContext.User = new GenericPrincipal(new GenericIdentity(application.Name), new string[0]);
 
             context.Succeed(requirement);
             return Task.CompletedTask;
