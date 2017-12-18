@@ -22,7 +22,7 @@ namespace ConfigStore.Api.Controllers {
             _configuration = configuration;
         }
 
-        [HttpGet("secrets")]
+        [HttpPost("secrets")]
         public async Task<IActionResult> GetSecrets() {
             List<Task<SecretBundle>> secretTasks =
                 (await _client.GetSecretsAsync(_configuration["KeyVaultUrl"]))
@@ -40,7 +40,7 @@ namespace ConfigStore.Api.Controllers {
             return Json(keyValuePairs);
         }
 
-        [HttpGet("applicationSecrets")]
+        [HttpPost("applicationSecrets")]
         public async Task<IActionResult> GetApplicationSecrets() {
             IPage<SecretItem> secretItems = await _client.GetSecretsAsync(_configuration["KeyVaultUrl"]);
 
@@ -56,14 +56,14 @@ namespace ConfigStore.Api.Controllers {
             return Json(secretNames);
         }
 
-        [HttpPost("applicationSecrets")]
+        [HttpPost("addApplicationSecrets")]
         public async Task<IActionResult> AddApplicationSecret([FromBody] AddConfigDto addConfigDto) {
             string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), addConfigDto.ConfigName);
             await _client.SetSecretAsync(_configuration["KeyVaultUrl"], configName, addConfigDto.ConfigValue);
             return Ok();
         }
 
-        [HttpGet("keys")]
+        [HttpPost("keys")]
         public async Task<IActionResult> GetKeys() {
             List<Task<KeyBundle>> keyTasks =
                 (await _client.GetKeysAsync(_configuration["KeyVaultUrl"]))

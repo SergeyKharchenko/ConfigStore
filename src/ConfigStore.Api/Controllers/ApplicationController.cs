@@ -21,8 +21,8 @@ namespace ConfigStore.Api.Controllers {
             _context = context;
         }
 
-        [HttpGet("canRegister")]
-        public async Task<IActionResult> CanRegister([FromQuery] ApplicationDto applicationDto) {
+        [HttpPost("canRegister")]
+        public async Task<IActionResult> CanRegister([FromBody] ApplicationDto applicationDto) {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
@@ -50,8 +50,8 @@ namespace ConfigStore.Api.Controllers {
             return Json(new { ApplicationKey = key });
         }
 
-        [HttpGet("login")]
-        public async Task<IActionResult> Login([FromQuery] ApplicationDto applicationDto) {
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] ApplicationDto applicationDto) {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }

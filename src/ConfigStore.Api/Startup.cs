@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Azure.KeyVault;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,14 +19,15 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace ConfigStore.Api {
     public class Startup {
-        public IConfiguration Configuration { get; }
+        private readonly IConfiguration Configuration;
+        private readonly IHostingEnvironment Environment;
 
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration, IHostingEnvironment environment) {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services) {
-
             services.AddMvc(options => {
                                 var builder = new AuthorizationPolicyBuilder();
                                 builder.Requirements.Add(new AuthorizationHandler(func => {
@@ -33,6 +36,9 @@ namespace ConfigStore.Api {
                                     }
                                 }));
                                 options.Filters.Add(new AuthorizeFilter(builder.Build()));
+                                if (!Environment.IsEnvironment("Localhost")) {
+                                    options.Filters.Add(new RequireHttpsAttribute());
+                                }
                             })
                     .AddJsonOptions(options => {
                                         options.SerializerSettings.ContractResolver =
@@ -61,14 +67,17 @@ namespace ConfigStore.Api {
             return result.AccessToken;
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
-            if (env.IsDevelopment()) {
+        public void Configure(IApplicationBuilder app) {
+            if (Environment.IsDevelopment() || Environment.IsEnvironment("Localhost")) {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseAuthentication();
 
             app.UseMvc();
+            if (!Environment.IsEnvironment("Localhost")) {
+                app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
+            }
 
             app.UseSwagger();
             app.UseSwaggerUI(options => {
