@@ -11,9 +11,10 @@ using System;
 namespace ConfigStore.Api.Migrations
 {
     [DbContext(typeof(ConfigStoreContext))]
-    partial class ConfigStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20171219204521_Add Environment")]
+    partial class AddEnvironment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

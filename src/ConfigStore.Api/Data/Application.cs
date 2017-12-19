@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConfigStore.Api.Data {
     public class Application {
@@ -7,5 +8,7 @@ namespace ConfigStore.Api.Data {
         public Guid Key { get; set; }
 
         public string Name { get; set; }
+
+        public virtual List<ApplicationEnvironment> Environments { get; set; }
     }
 }

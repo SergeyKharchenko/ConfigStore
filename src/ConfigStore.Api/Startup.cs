@@ -55,9 +55,11 @@ namespace ConfigStore.Api {
 
             services.AddSingleton(Configuration);
 
-        services.AddDbContext<ConfigStoreContext>(
+            services.AddDbContext<ConfigStoreContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped(provider => new KeyVaultClient(GetAccessToken));
+
+            services.AddSingleton(Configuration);
         }
 
         private async Task<string> GetAccessToken(string authority, string resource, string scope) {
