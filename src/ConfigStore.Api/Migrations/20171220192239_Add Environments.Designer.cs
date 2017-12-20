@@ -11,8 +11,8 @@ using System;
 namespace ConfigStore.Api.Migrations
 {
     [DbContext(typeof(ConfigStoreContext))]
-    [Migration("20171219204521_Add Environment")]
-    partial class AddEnvironment
+    [Migration("20171220192239_Add Environments")]
+    partial class AddEnvironments
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

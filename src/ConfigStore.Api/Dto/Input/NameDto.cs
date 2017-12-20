@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace ConfigStore.Api.Dto.Input {
-    public class ApplicationDto {
+    public class NameDto {
         [Required]
         [MinLength(3)]
         [MaxLength(16)]

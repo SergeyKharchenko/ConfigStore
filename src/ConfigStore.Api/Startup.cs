@@ -29,13 +29,6 @@ namespace ConfigStore.Api {
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc(options => {
-                                var builder = new AuthorizationPolicyBuilder();
-                                builder.Requirements.Add(new AuthorizationHandler(func => {
-                                    using (var context = services.BuildServiceProvider().GetService<ConfigStoreContext>()) {
-                                        return func(context);
-                                    }
-                                }));
-                                options.Filters.Add(new AuthorizeFilter(builder.Build()));
                                 if (!Environment.IsEnvironment("Localhost")) {
                                     options.Filters.Add(new RequireHttpsAttribute());
                                 }
@@ -44,6 +37,22 @@ namespace ConfigStore.Api {
                                         options.SerializerSettings.ContractResolver =
                                             new CamelCasePropertyNamesContractResolver();
                                     });
+
+            services.AddAuthorization(options => {
+                void ActionWithContext(Action<ConfigStoreContext> action) {
+                    using (var context = services.BuildServiceProvider().GetService<ConfigStoreContext>()) {
+                        action(context);
+                    }
+                }
+
+                options.AddPolicy("application", builder => {
+                        builder.Requirements.Add(new AuthorizationApplicationHandler(ActionWithContext));
+                    });
+
+                options.AddPolicy("environment", builder => {
+                        builder.Requirements.Add(new AuthorizationEnvironmentHandler(ActionWithContext));
+                    });
+                });
 
             services.AddAuthentication(options => options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options => options.RequireHttpsMetadata = false);

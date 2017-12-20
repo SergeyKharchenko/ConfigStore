@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ConfigStore.Api.Dto.Input;
 using ConfigStore.Api.Extensions;
 using ConfigStore.Api.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
@@ -13,6 +14,7 @@ using Microsoft.Rest.Azure;
 
 namespace ConfigStore.Api.Controllers {
     [Route("api/[controller]")]
+    [Authorize("environment")]
     public class ConfigController : Controller {
         private readonly KeyVaultClient _client;
         private readonly IConfiguration _configuration;
