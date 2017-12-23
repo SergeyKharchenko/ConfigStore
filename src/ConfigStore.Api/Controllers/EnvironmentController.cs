@@ -56,7 +56,7 @@ namespace ConfigStore.Api.Controllers {
                     ApplicationId = application.Id
                 });
                 await _context.SaveChangesAsync();
-            } catch (DbUpdateConcurrencyException e) {
+            } catch (DbUpdateConcurrencyException) {
                 return Json(ErrorDto.Create(ErrorCodes.EnvironmentNameNotFound));
             }
             return Ok();

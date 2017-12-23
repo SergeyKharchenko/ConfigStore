@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConfigStore.Api.Dto.Input;
+using ConfigStore.Api.Dto.Output;
+using ConfigStore.Api.Enums;
 using ConfigStore.Api.Extensions;
 using ConfigStore.Api.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +26,45 @@ namespace ConfigStore.Api.Controllers {
             _configuration = configuration;
         }
 
+        [HttpPost("addApplicationSecrets")]
+        public async Task<IActionResult> AddApplicationSecret([FromBody] AddConfigDto addConfigDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironment().Name, addConfigDto.ConfigName);
+            await _client.SetSecretAsync(_configuration["KeyVaultUrl"], configName, addConfigDto.ConfigValue);
+            return Ok();
+        }
+
+        [HttpPost("applicationSecrets")]
+        public async Task<IActionResult> GetApplicationSecrets() {
+            IPage<SecretItem> secretItems = await _client.GetSecretsAsync(_configuration["KeyVaultUrl"]);
+
+            string prefix = $"{ConfigNameResolver.CreatePrefix(this.GetApplicationName(), this.GetEnvironment().Name)}{ConfigNameResolver.Separator}";
+
+            IEnumerable<string> secretNames =
+                from item in secretItems
+                let index = item.Identifier.Name.IndexOf(prefix, StringComparison.InvariantCultureIgnoreCase)
+                where index != -1
+                let configName = item.Identifier.Name.Remove(index, prefix.Length)
+                select configName;
+
+            return Json(secretNames);
+        }
+
+        [HttpPost("applicationSecret")]
+        public async Task<IActionResult> GetApplicationSecret(NameDto nameDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironment().Name, nameDto.Name);
+            try {
+                SecretBundle secretItem = await _client.GetSecretAsync(_configuration["KeyVaultUrl"], configName);
+                 return Json(secretItem.Value);
+            } catch (KeyVaultErrorException) {
+                return Json(ErrorDto.Create(ErrorCodes.ConfigNameNotFound));
+            }
+        }
+
+
+
+
+
+
         [HttpPost("secrets")]
         public async Task<IActionResult> GetSecrets() {
             List<Task<SecretBundle>> secretTasks =
@@ -40,29 +81,6 @@ namespace ConfigStore.Api.Controllers {
                           .ToList();
 
             return Json(keyValuePairs);
-        }
-
-        [HttpPost("applicationSecrets")]
-        public async Task<IActionResult> GetApplicationSecrets() {
-            IPage<SecretItem> secretItems = await _client.GetSecretsAsync(_configuration["KeyVaultUrl"]);
-
-            string prefix = ConfigNameResolver.CreatePrefix(this.GetApplicationName());
-
-            IEnumerable<string> secretNames =
-                from item in secretItems
-                let index = item.Identifier.Name.IndexOf(prefix, StringComparison.InvariantCultureIgnoreCase)
-                where index != -1
-                let configName = item.Identifier.Name.Remove(index, prefix.Length)
-                select configName;
-
-            return Json(secretNames);
-        }
-
-        [HttpPost("addApplicationSecrets")]
-        public async Task<IActionResult> AddApplicationSecret([FromBody] AddConfigDto addConfigDto) {
-            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), addConfigDto.ConfigName);
-            await _client.SetSecretAsync(_configuration["KeyVaultUrl"], configName, addConfigDto.ConfigValue);
-            return Ok();
         }
 
         [HttpPost("keys")]
