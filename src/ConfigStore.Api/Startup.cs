@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using ConfigStore.Api.Authorization;
 using ConfigStore.Api.Data;
+using ConfigStore.Api.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -69,6 +70,7 @@ namespace ConfigStore.Api {
             services.AddScoped(provider => new KeyVaultClient(GetAccessToken));
 
             services.AddSingleton(Configuration);
+            services.AddScoped<ConfigClient>();
         }
 
         private async Task<string> GetAccessToken(string authority, string resource, string scope) {
