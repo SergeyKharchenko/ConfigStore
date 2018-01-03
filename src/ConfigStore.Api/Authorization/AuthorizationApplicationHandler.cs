@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.EntityFrameworkCore;
 
 namespace ConfigStore.Api.Authorization {
     public class AuthorizationApplicationHandler : AuthorizationHandler<AuthorizationApplicationHandler>, IAuthorizationRequirement {
@@ -44,7 +42,7 @@ namespace ConfigStore.Api.Authorization {
                 return null;
             }
             Application application = null;
-            ExecuteActionWithContext(dbContext => application = dbContext.Applications.FirstOrDefault(app => Equals(app.Key, key)));
+            ExecuteActionWithContext(dbContext => application = dbContext.Applications.FirstOrDefault(app => app.Key == key));
             return application;
         }
     }

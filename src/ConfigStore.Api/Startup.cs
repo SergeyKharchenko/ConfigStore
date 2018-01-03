@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -37,6 +38,7 @@ namespace ConfigStore.Api {
                     .AddJsonOptions(options => {
                                         options.SerializerSettings.ContractResolver =
                                             new CamelCasePropertyNamesContractResolver();
+                                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                                     });
 
             services.AddAuthorization(options => {
@@ -56,7 +58,7 @@ namespace ConfigStore.Api {
                 });
 
             services.AddAuthentication(options => options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options => options.RequireHttpsMetadata = false);
+                    .AddJwtBearer();
 
             services.AddSwaggerGen(options => {
                                        options.SwaggerDoc("v1", new Info { Title = "Storage API", Version = "v1" });

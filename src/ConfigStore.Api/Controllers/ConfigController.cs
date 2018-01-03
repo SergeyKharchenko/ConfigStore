@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ConfigStore.Api.Dto.Input;
 using ConfigStore.Api.Dto.Output;
 using ConfigStore.Api.Enums;
@@ -9,10 +6,7 @@ using ConfigStore.Api.Extensions;
 using ConfigStore.Api.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Rest.Azure;
 
 namespace ConfigStore.Api.Controllers {
     [Route("api/[controller]")]
@@ -40,8 +34,8 @@ namespace ConfigStore.Api.Controllers {
             }
         }
 
-        [HttpPost("addApplicationSecrets")]
-        public async Task<IActionResult> AddApplicationSecret([FromBody] AddConfigDto addConfigDto) {
+        [HttpPost("addApplicationConfig")]
+        public async Task<IActionResult> AddApplicationConfig([FromBody] AddConfigDto addConfigDto) {
             string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironment().Name, addConfigDto.ConfigName);
             await _client.AddConfigAsync(configName, addConfigDto.ConfigValue);
             return Ok();
