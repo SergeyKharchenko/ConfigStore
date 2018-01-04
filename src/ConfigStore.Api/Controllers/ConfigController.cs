@@ -1,65 +1,60 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using ConfigStore.Api.Dto.Input;
+using ConfigStore.Api.Dto.Output;
+using ConfigStore.Api.Enums;
 using ConfigStore.Api.Extensions;
+using ConfigStore.Api.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace ConfigStore.Api.Controllers {
     [Route("api/[controller]")]
+    [Authorize("environment")]
     public class ConfigController : Controller {
-        private readonly KeyVaultClient _client;
-        private readonly IConfiguration _configuration;
+        private readonly ConfigClient _client;
 
-        public ConfigController(KeyVaultClient client, IConfiguration configuration) {
+        public ConfigController(ConfigClient client) {
             _client = client;
-            _configuration = configuration;
         }
 
-        [HttpGet("secrets")]
-        public async Task<IActionResult> GetSecrets() {
-            List<Task<SecretBundle>> ecretTasks =
-                (await _client.GetSecretsAsync(_configuration["KeyVaultUrl"]))
-                .AsEnumerable()
-                .Select(async secretItem => await _client.GetSecretAsync(secretItem.Id))
-                .ToList();
-
-            await Task.WhenAll(ecretTasks);
-
-            List<KeyValuePair<string, string>> keyValuePairs =
-                ecretTasks.Select(secret => secret.Result)
-                       .Select(secret => new KeyValuePair<string, string>(secret.SecretIdentifier.Name, secret.Value))
-                       .ToList();
-
-            return this.Json(keyValuePairs);
+        [HttpPost("names")]
+        public async Task<IActionResult> GetNames() {
+            return Json(await _client.GetConfigNamesAsync(this.GetApplicationName(), this.GetEnvironmentName()));
         }
 
-        [HttpGet("keys")]
+        [HttpPost("value")]
+        public async Task<IActionResult> GetConfigValue(NameDto nameDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name);
+            try {
+                 return Json(await _client.GetConfigValueAsync(configName));
+            } catch (KeyVaultErrorException) {
+                return Json(ErrorDto.Create(ErrorCodes.ConfigNameNotFound));
+            }
+        }
+
+        [HttpPost("add")]
+        public async Task<IActionResult> Add([FromBody] AddConfigDto addConfigDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), addConfigDto.ConfigName);
+            await _client.AddConfigAsync(configName, addConfigDto.ConfigValue);
+            return Ok();
+        }
+
+        [HttpPost("remove")]
+        public async Task<IActionResult> Remove([FromBody] NameDto nameDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name);
+            await _client.RemoveConfigAsync(configName);
+            return Ok();
+        }
+
+        [HttpPost("_configs")]
+        public async Task<IActionResult> GetConfigs() {
+            return Json(await _client.GetConfigsAsync());
+        }
+
+        [HttpPost("_keys")]
         public async Task<IActionResult> GetKeys() {
-            List<Task<KeyBundle>> keyTasks =
-                (await _client.GetKeysAsync(_configuration["KeyVaultUrl"]))
-                .AsEnumerable()
-                .Select(async keyItem => await _client.GetKeyAsync(keyItem.Identifier.Identifier))
-                .ToList();
-
-            await Task.WhenAll(keyTasks);
-
-            List<KeyValuePair<string, byte[]>> keyValuePairs =
-                keyTasks.Select(secret => secret.Result)
-                       .Select(key => new KeyValuePair<string, byte[]>(key.KeyIdentifier.Name, key.Key.N))
-                       .ToList();
-
-            return this.Json(keyValuePairs);
+            return Json(await _client.GetKeysAsync());
         }
-
-        [HttpGet("{id}")]
-        public string Get(int id) {
-            return "value";
-        }
-
-        [HttpPost]
-        public void Post([FromBody] string value) { }
     }
 }

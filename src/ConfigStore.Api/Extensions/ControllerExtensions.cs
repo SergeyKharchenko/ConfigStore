@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ConfigStore.Api.Authorization;
+using ConfigStore.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
@@ -24,6 +26,22 @@ namespace ConfigStore.Api.Extensions {
                 errors.AddRange(errorMessages);
             }                        
             return errors;
+        }
+
+        public static Application GetApplication(this Controller controller) {
+            return (controller.HttpContext.User.Identity as ApplicationIdentity)?.Application;
+        }
+
+        public static string GetApplicationName(this Controller controller) {
+            return controller.HttpContext.User.Identity.Name;
+        }
+
+        public static ApplicationEnvironment GetEnvironment(this Controller controller) {
+            return (controller.HttpContext.User.Identity as EnvironmentIdentity)?.Environment;
+        }
+
+        public static string GetEnvironmentName(this Controller controller) {
+            return (controller.HttpContext.User.Identity as EnvironmentIdentity)?.Environment?.Name;
         }
     }
 }

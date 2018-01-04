@@ -11,9 +11,10 @@ using System;
 namespace ConfigStore.Api.Migrations
 {
     [DbContext(typeof(ConfigStoreContext))]
-    partial class ConfigStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20180104115718_Cascade delete Envs on App delete")]
+    partial class CascadedeleteEnvsonAppdelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
