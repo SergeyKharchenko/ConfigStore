@@ -370,13 +370,6 @@ input {
   background: #C7DDE2;
   text-transform: uppercase; }
 
-.fb-btn {
-  border: 2px solid #d3dae9;
-  color: #8fa1c7; }
-  .fb-btn span {
-    font-weight: bold;
-    color: #455a81; }
-
 .sign-in {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out; }
@@ -394,17 +387,5 @@ input {
   .cont.s--signup .sign-up {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-
-.icon-link {
-  position: absolute;
-  left: 5px;
-  bottom: 5px;
-  width: 32px; }
-  .icon-link img {
-    width: 100%;
-    vertical-align: top; }
-  .icon-link--twitter {
-    left: auto;
-    right: 5px; }
 
 /*# sourceMappingURL=style.css.map */

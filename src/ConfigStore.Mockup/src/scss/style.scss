@@ -109,7 +109,6 @@ button {
 	margin: 0 auto;
 	width: $inputW;
 	height: $btnH;
-	//border-radius: 30px;
 	color: #fff;
 	font-size: 15px;
 	cursor: pointer;
@@ -212,7 +211,6 @@ button {
 			width: 100%;
 			height: 100%;
 			border: 2px solid #fff;
-			//border-radius: 30px;
 		}
 
 		span {
@@ -286,16 +284,6 @@ input {
 	text-transform: uppercase;
 }
 
-.fb-btn {
-	border: 2px solid #d3dae9;
-	color: darken(#d3dae9, 20%);
-
-	span {
-		font-weight: bold;
-		color: darken(#768cb6, 20%);
-	}
-}
-
 .sign-in {
 	transition-timing-function: ease-out;
 
@@ -313,22 +301,4 @@ input {
 		transform: translate3d(0,0,0);
 	}
 }
-
-.icon-link {
-	position: absolute;
-	left: 5px;
-	bottom: 5px;
-	width: 32px;
-
-	img {
-		width: 100%;
-		vertical-align: top;
-	}
-
-	&--twitter {
-		left: auto;
-		right: 5px;
-	}
-}
-
 
