@@ -18,15 +18,14 @@ namespace ConfigStore.Api.Controllers {
             _client = client;
         }
 
-        [HttpPost("getApplicationConfigNames")]
-        public async Task<IActionResult> GetApplicationConfigNames() {
-            string prefix = $"{ConfigNameResolver.CreatePrefix(this.GetApplicationName(), this.GetEnvironment().Name)}{ConfigNameResolver.Separator}";
-            return Json(await _client.GetConfigNamesAsync(prefix));
+        [HttpPost("names")]
+        public async Task<IActionResult> GetNames() {
+            return Json(await _client.GetConfigNamesAsync(this.GetApplicationName(), this.GetEnvironmentName()));
         }
 
-        [HttpPost("getApplicationConfig")]
-        public async Task<IActionResult> GetApplicationConfig(NameDto nameDto) {
-            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironment().Name, nameDto.Name);
+        [HttpPost("value")]
+        public async Task<IActionResult> GetConfigValue(NameDto nameDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name);
             try {
                  return Json(await _client.GetConfigValueAsync(configName));
             } catch (KeyVaultErrorException) {
@@ -34,19 +33,26 @@ namespace ConfigStore.Api.Controllers {
             }
         }
 
-        [HttpPost("addApplicationConfig")]
-        public async Task<IActionResult> AddApplicationConfig([FromBody] AddConfigDto addConfigDto) {
-            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironment().Name, addConfigDto.ConfigName);
+        [HttpPost("add")]
+        public async Task<IActionResult> Add([FromBody] AddConfigDto addConfigDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), addConfigDto.ConfigName);
             await _client.AddConfigAsync(configName, addConfigDto.ConfigValue);
             return Ok();
         }
 
-        [HttpPost("configs")]
+        [HttpPost("remove")]
+        public async Task<IActionResult> Remove([FromBody] NameDto nameDto) {
+            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name);
+            await _client.RemoveConfigAsync(configName);
+            return Ok();
+        }
+
+        [HttpPost("_configs")]
         public async Task<IActionResult> GetConfigs() {
             return Json(await _client.GetConfigsAsync());
         }
 
-        [HttpPost("keys")]
+        [HttpPost("_keys")]
         public async Task<IActionResult> GetKeys() {
             return Json(await _client.GetKeysAsync());
         }

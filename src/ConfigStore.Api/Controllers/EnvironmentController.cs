@@ -1,11 +1,13 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
 using ConfigStore.Api.Dto.Input;
 using ConfigStore.Api.Dto.Output;
 using ConfigStore.Api.Enums;
 using ConfigStore.Api.Extensions;
+using ConfigStore.Api.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +17,11 @@ namespace ConfigStore.Api.Controllers {
     [Authorize("application")]
     public class EnvironmentController : Controller {
         private readonly ConfigStoreContext _context;
+        private readonly ConfigClient _client;
 
-        public EnvironmentController(ConfigStoreContext context) {
+        public EnvironmentController(ConfigStoreContext context, ConfigClient client) {
             _context = context;
+            _client = client;
         }
 
         [HttpPost("add")]
@@ -48,11 +52,12 @@ namespace ConfigStore.Api.Controllers {
             }
 
             Application application = this.GetApplication();
-            string name = nameDto.Name.ToLower();
-
-            try {   
+            string environmentName = nameDto.Name.ToLower();
+            
+            await _client.RemoveConfigsAsync(this.GetApplicationName(), environmentName);
+            try {
                 _context.Environments.Remove(new ApplicationEnvironment {
-                    Name = name,
+                    Name = environmentName,
                     ApplicationId = application.Id
                 });
                 await _context.SaveChangesAsync();

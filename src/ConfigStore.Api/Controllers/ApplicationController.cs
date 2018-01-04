@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
@@ -40,11 +41,11 @@ namespace ConfigStore.Api.Controllers {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
-            string name = nameDto.Name.ToLower();
+            string applicationName = nameDto.Name.ToLower();
             Guid key = Guid.NewGuid();
             try {
                 await _context.Applications.AddAsync(new Application {
-                    Name = name,
+                    Name = applicationName,
                     Key = key
                 });
                 await _context.SaveChangesAsync();
@@ -55,24 +56,20 @@ namespace ConfigStore.Api.Controllers {
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] NameKeyDto nameKeyDto) {
+        public async Task<IActionResult> Login([FromBody] KeyDto keyDto) {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
-            string name = nameKeyDto.Name.ToLower();
             Application application =
                 await _context.Applications.Include(app => app.Environments)
-                              .FirstOrDefaultAsync(app => app.Name == name && app.Key == nameKeyDto.Key);
+                              .FirstOrDefaultAsync(app => app.Key == keyDto.Key);
             if (application == null) {
                 return StatusCode((int)HttpStatusCode.Unauthorized);
             }
 
-            var environmentTasks = application.Environments.Select(async env => {
-                string prefix = $"{ConfigNameResolver.CreatePrefix(application.Name, env.Name)}{ConfigNameResolver.Separator}";
-                return new {
-                    EnvironmentName = env.Name,
-                    Configs = await _client.GetConfigNamesAsync(prefix)
-                };
+            var environmentTasks = application.Environments.Select(async env => new {
+                EnvironmentName = env.Name,
+                Configs = await _client.GetConfigNamesAsync(application.Name, env.Name)
             }).ToList();
             await Task.WhenAll(environmentTasks);
 
@@ -80,6 +77,31 @@ namespace ConfigStore.Api.Controllers {
                 ApplicationName = application.Name,
                 Environments = environmentTasks.Select(task => task.Result)
             });
+        }
+
+        [HttpPost("remove")]
+        public async Task<IActionResult> Remove([FromBody] KeyDto keyDto) {
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+
+            Application application =
+                await _context.Applications.Include(app => app.Environments)
+                              .FirstOrDefaultAsync(app => app.Key == keyDto.Key);
+            if (application == null) {
+                return StatusCode((int)HttpStatusCode.Unauthorized);
+            }
+
+            IEnumerable<Task> removeConfigTasks = application.Environments.Select(async env => 
+                await _client.RemoveConfigsAsync(application.Name, env.Name)
+            );
+
+            await Task.WhenAll(removeConfigTasks);
+
+            _context.Applications.Remove(application);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }

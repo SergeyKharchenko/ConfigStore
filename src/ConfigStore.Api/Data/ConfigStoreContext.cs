@@ -31,7 +31,8 @@ namespace ConfigStore.Api.Data {
             builder.Entity<Application>()
                    .HasMany(app => app.Environments)
                    .WithOne(env => env.Application)
-                   .HasForeignKey(env => env.ApplicationId);
+                   .HasForeignKey(env => env.ApplicationId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ApplicationEnvironment>()
                    .HasKey(env => new { env.ApplicationId, env.Name });

@@ -28,16 +28,20 @@ namespace ConfigStore.Api.Extensions {
             return errors;
         }
 
-        public static string GetApplicationName(this Controller controller) {
-            return controller.HttpContext.User.Identity.Name;
-        }
-
         public static Application GetApplication(this Controller controller) {
             return (controller.HttpContext.User.Identity as ApplicationIdentity)?.Application;
         }
 
+        public static string GetApplicationName(this Controller controller) {
+            return controller.HttpContext.User.Identity.Name;
+        }
+
         public static ApplicationEnvironment GetEnvironment(this Controller controller) {
             return (controller.HttpContext.User.Identity as EnvironmentIdentity)?.Environment;
+        }
+
+        public static string GetEnvironmentName(this Controller controller) {
+            return (controller.HttpContext.User.Identity as EnvironmentIdentity)?.Environment?.Name;
         }
     }
 }

@@ -51,14 +51,16 @@ namespace ConfigStore.Api.Infrastructure {
             return keyValuePairs;
         }
 
-        public async Task<IEnumerable<string>> GetConfigNamesAsync(string prefix) {
+        public async Task<IEnumerable<string>> GetConfigNamesAsync(string applicationName, string environmentName, bool decrypt = true) {
             IPage<SecretItem> secretItems = await _client.GetSecretsAsync(_keyVaultUrl);
-            return from item in secretItems
-                   let index = item.Identifier.Name.IndexOf(prefix, StringComparison.InvariantCultureIgnoreCase)
-                   where index != -1
-                   let configName = item.Identifier.Name.Remove(index, prefix.Length)
-                   select configName;
             
+            string prefix = $"{ConfigNameResolver.CreatePrefix(applicationName, environmentName)}{ConfigNameResolver.Separator}";
+            IEnumerable<string> configs = 
+                from item in secretItems
+                where item.Identifier.Name.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)
+                select item.Identifier.Name;
+
+            return decrypt ? configs.Select(config => config.Replace(prefix, "")) : configs;
         }
 
         public async Task<string> GetConfigValueAsync(string configName) {
@@ -68,6 +70,16 @@ namespace ConfigStore.Api.Infrastructure {
 
         public async Task AddConfigAsync(string configName, string configValue) {
             await _client.SetSecretAsync(_keyVaultUrl, configName, configValue);
+        }
+
+        public async Task RemoveConfigsAsync(string applicationName, string environmentName) {
+            IEnumerable<string> configNames = await GetConfigNamesAsync(applicationName, environmentName, decrypt: false);
+            IEnumerable<Task> removeTasks = configNames.Select(async name => await RemoveConfigAsync(name));
+            await Task.WhenAll(removeTasks);
+        }
+
+        public async Task RemoveConfigAsync(string configName) {
+            await _client.DeleteSecretAsync(_keyVaultUrl, configName);
         }
     }
 }
