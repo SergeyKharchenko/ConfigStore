@@ -1,4 +1,4 @@
-﻿namespace ConfigStore.Api.Data {
+﻿namespace ConfigStore.Api.Data.Models {
     public class ApplicationEnvironment {
         public string Name { get; set; }
 

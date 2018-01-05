@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
+using ConfigStore.Api.Data.Models;
 using ConfigStore.Api.Dto.Input;
 using ConfigStore.Api.Dto.Output;
 using ConfigStore.Api.Enums;

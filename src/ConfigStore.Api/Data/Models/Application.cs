@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ConfigStore.Api.Data {
+namespace ConfigStore.Api.Data.Models {
     public class Application {
         public int Id { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using System.Security.Principal;
 using ConfigStore.Api.Data;
+using ConfigStore.Api.Data.Models;
 
 namespace ConfigStore.Api.Authorization {
     public class ApplicationIdentity : GenericIdentity {

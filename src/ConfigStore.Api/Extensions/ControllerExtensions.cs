@@ -2,6 +2,7 @@
 using System.Linq;
 using ConfigStore.Api.Authorization;
 using ConfigStore.Api.Data;
+using ConfigStore.Api.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;

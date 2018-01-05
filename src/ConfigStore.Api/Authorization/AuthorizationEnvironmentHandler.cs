@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using ConfigStore.Api.Data;
+using ConfigStore.Api.Data.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ConfigStore.Api.Authorization {

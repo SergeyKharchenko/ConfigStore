@@ -4,11 +4,9 @@ using ConfigStore.Api.Authorization;
 using ConfigStore.Api.Data;
 using ConfigStore.Api.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Azure.KeyVault;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +41,7 @@ namespace ConfigStore.Api {
 
             services.AddAuthorization(options => {
                 void ActionWithContext(Action<ConfigStoreContext> action) {
-                    using (var context = services.BuildServiceProvider().GetService<ConfigStoreContext>()) {
+                    using (ConfigStoreContext context = services.BuildServiceProvider().GetService<ConfigStoreContext>()) {
                         action(context);
                     }
                 }
@@ -69,6 +67,7 @@ namespace ConfigStore.Api {
 
             services.AddDbContext<ConfigStoreContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddScoped(provider => new KeyVaultClient(GetAccessToken));
 
             services.AddSingleton(Configuration);
@@ -99,13 +98,20 @@ namespace ConfigStore.Api {
                                  options.SwaggerEndpoint("/swagger/v1/swagger.json", "Storage API v1");
                              });
 
-            ExecuteWithContext(app, context => context.Database.Migrate());
+            InitializeDbAsync(app).Wait();
         }
 
-        private static void ExecuteWithContext(IApplicationBuilder app, Action<ConfigStoreContext> action) {
+        private static async Task InitializeDbAsync(IApplicationBuilder app) {
             using (IServiceScope serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope()) {
                 ConfigStoreContext context = serviceScope.ServiceProvider.GetRequiredService<ConfigStoreContext>();
-                action(context);
+                await context.Database.EnsureDeletedAsync();
+                await context.Database.MigrateAsync();
+
+                ConfigClient client = serviceScope.ServiceProvider.GetRequiredService<ConfigClient>();
+                await client.ClearAsync();
+
+                DbInitializer initializer = new DbInitializer(context, client);
+                await initializer.SeedAsync();
             }
         }
     }
