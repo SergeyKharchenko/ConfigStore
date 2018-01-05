@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
+using ConfigStore.Api.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 

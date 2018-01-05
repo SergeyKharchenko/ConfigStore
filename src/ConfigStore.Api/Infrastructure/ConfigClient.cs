@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
@@ -52,34 +51,57 @@ namespace ConfigStore.Api.Infrastructure {
         }
 
         public async Task<IEnumerable<string>> GetConfigNamesAsync(string applicationName, string environmentName, bool decrypt = true) {
-            IPage<SecretItem> secretItems = await _client.GetSecretsAsync(_keyVaultUrl);
+            IEnumerable<string> names = await GetConfigNamesAsync();
+            var configs =
+                from name in names
+                let configName = ConfigNameResolver.GetConfigName(applicationName, environmentName, name)
+                where configName != null
+                select new { ConfigName = configName, RawName = name };
             
-            string prefix = $"{ConfigNameResolver.CreatePrefix(applicationName, environmentName)}{ConfigNameResolver.Separator}";
-            IEnumerable<string> configs = 
-                from item in secretItems
-                where item.Identifier.Name.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)
-                select item.Identifier.Name;
-
-            return decrypt ? configs.Select(config => config.Replace(prefix, "")) : configs;
+            return decrypt 
+                ? configs.Select(config => config.ConfigName) 
+                : configs.Select(config => config.RawName);
         }
 
-        public async Task<string> GetConfigValueAsync(string configName) {
-            SecretBundle secretItem = await _client.GetSecretAsync(_keyVaultUrl, configName);
+        private async Task<IEnumerable<string>> GetConfigNamesAsync() {
+            IPage<SecretItem> secretItems = await _client.GetSecretsAsync(_keyVaultUrl);
+            return secretItems.Select(item => item.Identifier.Name);
+        }
+
+        public async Task<string> GetConfigValueAsync(string applicationName, string environmentName, string configName) {
+            string configNameEncrypted = ConfigNameResolver.CreateConfigName(applicationName, environmentName, configName);
+            SecretBundle secretItem = await _client.GetSecretAsync(_keyVaultUrl, configNameEncrypted);
             return secretItem.Value;
         }
 
-        public async Task AddConfigAsync(string configName, string configValue) {
-            await _client.SetSecretAsync(_keyVaultUrl, configName, configValue);
+        public async Task AddConfigAsync(string applicationName, string environmentName, string configName, string configValue) {
+            string configNameEncrypted = ConfigNameResolver.CreateConfigName(applicationName, environmentName, configName);
+            await _client.SetSecretAsync(_keyVaultUrl, configNameEncrypted, configValue);
         }
 
         public async Task RemoveConfigsAsync(string applicationName, string environmentName) {
-            IEnumerable<string> configNames = await GetConfigNamesAsync(applicationName, environmentName, decrypt: false);
+            IEnumerable<string> configNames = 
+                await GetConfigNamesAsync(applicationName, environmentName, decrypt: false);
+            await RemoveConfigsAsync(configNames);
+        }
+
+        private async Task RemoveConfigsAsync(IEnumerable<string> configNames) {
             IEnumerable<Task> removeTasks = configNames.Select(async name => await RemoveConfigAsync(name));
             await Task.WhenAll(removeTasks);
         }
 
-        public async Task RemoveConfigAsync(string configName) {
+        public async Task RemoveConfigAsync(string applicationName, string environmentName, string configName) {
+            string configNameEncrypted = ConfigNameResolver.CreateConfigName(applicationName, environmentName, configName);
+            await RemoveConfigAsync(configNameEncrypted);
+        }
+
+        private async Task RemoveConfigAsync(string configName) {
             await _client.DeleteSecretAsync(_keyVaultUrl, configName);
+        }
+
+        public async Task ClearAsync() {
+            IEnumerable<string> names = await GetConfigNamesAsync();
+            await RemoveConfigsAsync(names);
         }
     }
 }

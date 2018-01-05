@@ -24,10 +24,12 @@ namespace ConfigStore.Api.Controllers {
         }
 
         [HttpPost("value")]
-        public async Task<IActionResult> GetConfigValue(NameDto nameDto) {
-            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name);
+        public async Task<IActionResult> GetValue(NameDto nameDto) {
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
             try {
-                 return Json(await _client.GetConfigValueAsync(configName));
+                 return Json(await _client.GetConfigValueAsync(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name));
             } catch (KeyVaultErrorException) {
                 return Json(ErrorDto.Create(ErrorCodes.ConfigNameNotFound));
             }
@@ -35,15 +37,23 @@ namespace ConfigStore.Api.Controllers {
 
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] AddConfigDto addConfigDto) {
-            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), addConfigDto.ConfigName);
-            await _client.AddConfigAsync(configName, addConfigDto.ConfigValue);
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+            await _client.AddConfigAsync(this.GetApplicationName(), this.GetEnvironmentName(), addConfigDto.ConfigName, addConfigDto.ConfigValue);
             return Ok();
         }
 
         [HttpPost("remove")]
         public async Task<IActionResult> Remove([FromBody] NameDto nameDto) {
-            string configName = ConfigNameResolver.CreateConfigName(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name);
-            await _client.RemoveConfigAsync(configName);
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+            try {
+                await _client.RemoveConfigAsync(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name);
+            } catch (KeyVaultErrorException) {
+                return Json(ErrorDto.Create(ErrorCodes.ConfigNameNotFound));
+            }
             return Ok();
         }
 

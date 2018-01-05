@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
+using ConfigStore.Api.Data.Models;
 using ConfigStore.Api.Dto.Input;
 using ConfigStore.Api.Dto.Output;
 using ConfigStore.Api.Enums;
@@ -32,7 +33,7 @@ namespace ConfigStore.Api.Controllers {
                 return this.ValidationError();
             }
             string name = nameDto.Name.ToLower();
-            bool canRegisterApplication = !await _context.Applications.AnyAsync(app => Equals(app.Name, name));
+            bool canRegisterApplication = !await _context.Applications.AnyAsync(app => app.Name == name);
             return Json(new { canRegisterApplication });
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ConfigStore.Api.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -19,10 +20,10 @@ namespace ConfigStore.Api.Authorization {
                 operation.Parameters.Add(new NonBodyParameter {
                     Name = AuthorizationApplicationHandler.ApplicationKeyHeaderName,
                     In = "header",
-                    Description = "Key for registered application",
+                    Description = "Key of registered application",
                     Required = true,
                     Type = "string",
-                    Default = Guid.Empty
+                    Default = DbInitializer.DefaultAppKey
                 });
             }
 
