@@ -64,6 +64,7 @@ namespace ConfigStore.Api {
                                    });
 
             services.AddSingleton(Configuration);
+            services.AddSingleton(Environment);
 
             services.AddDbContext<ConfigStoreContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -104,6 +105,7 @@ namespace ConfigStore.Api {
         private static async Task InitializeDbAsync(IApplicationBuilder app) {
             using (IServiceScope serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope()) {
                 ConfigStoreContext context = serviceScope.ServiceProvider.GetRequiredService<ConfigStoreContext>();
+                context.Database.SetCommandTimeout(TimeSpan.FromMinutes(5));
                 await context.Database.EnsureDeletedAsync();
                 await context.Database.MigrateAsync();
 

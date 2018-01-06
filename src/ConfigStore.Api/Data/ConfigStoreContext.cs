@@ -1,14 +1,17 @@
 ﻿using ConfigStore.Api.Data.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace ConfigStore.Api.Data {
     public class ConfigStoreContext : DbContext {
-        private readonly IConfiguration Configuration;
+        private readonly IConfiguration _configuration;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ConfigStoreContext(DbContextOptions options, IConfiguration configuration)
+        public ConfigStoreContext(DbContextOptions options, IConfiguration configuration, IHostingEnvironment hostingEnvironment)
             : base(options) {
-            Configuration = configuration;
+            _configuration = configuration;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public ConfigStoreContext() { }
@@ -19,8 +22,8 @@ namespace ConfigStore.Api.Data {
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             base.OnConfiguring(optionsBuilder);
-            if (!optionsBuilder.IsConfigured) {
-                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            if (!optionsBuilder.IsConfigured && _hostingEnvironment.IsEnvironment("Localhost")) {
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             }
         }
 
