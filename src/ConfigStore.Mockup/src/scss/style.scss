@@ -276,7 +276,7 @@ input {
 	text-transform: uppercase;
 }
 
-.sign-in {
+.log-in {
 	transition-timing-function: ease-out;
 
 	@include signUpActive {
@@ -294,3 +294,6 @@ input {
 	}
 }
 
+.group-key{
+	display: none;
+}

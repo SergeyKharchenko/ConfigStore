@@ -175,14 +175,14 @@ input, button {
 .cont {
   overflow: hidden;
   position: relative;
-  width: 900px;
+  width: 600px;
   height: 520px;
   margin: 0px auto;
   background: #fff; }
 
 .form {
   position: relative;
-  width: 550px;
+  width: 400px;
   height: 100%;
   -webkit-transition: -webkit-transform 1.2s ease-in-out;
   transition: -webkit-transform 1.2s ease-in-out;
@@ -193,19 +193,19 @@ input, button {
 .sub-cont {
   overflow: hidden;
   position: absolute;
-  left: 550px;
+  left: 400px;
   top: 0;
-  width: 900px;
+  width: 600px;
   height: 100%;
-  padding-left: 350px;
+  padding-left: 200px;
   background: #fff;
   -webkit-transition: -webkit-transform 1.2s ease-in-out;
   transition: -webkit-transform 1.2s ease-in-out;
   transition: transform 1.2s ease-in-out;
   transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out; }
   .cont.s--signup .sub-cont {
-    -webkit-transform: translate3d(-550px, 0, 0);
-    transform: translate3d(-550px, 0, 0); }
+    -webkit-transform: translate3d(-400px, 0, 0);
+    transform: translate3d(-400px, 0, 0); }
 
 button {
   display: block;
@@ -222,7 +222,7 @@ button {
   position: absolute;
   left: 0;
   top: 0;
-  width: 350px;
+  width: 200px;
   height: 100%;
   padding-top: 360px; }
   .img:before {
@@ -230,7 +230,7 @@ button {
     position: absolute;
     right: 0;
     top: 0;
-    width: 900px;
+    width: 600px;
     height: 100%;
     background-image: url("../img/form-bg.jpg");
     background-size: cover;
@@ -247,8 +247,8 @@ button {
     height: 100%;
     background: rgba(0, 0, 0, 0.1); }
   .cont.s--signup .img:before {
-    -webkit-transform: translate3d(550px, 0, 0);
-    transform: translate3d(550px, 0, 0); }
+    -webkit-transform: translate3d(400px, 0, 0);
+    transform: translate3d(400px, 0, 0); }
   .img__text {
     z-index: 2;
     position: absolute;
@@ -269,13 +269,13 @@ button {
       font-size: 14px;
       line-height: 1.5; }
     .cont.s--signup .img__text.m--up {
-      -webkit-transform: translateX(700px);
-      -ms-transform: translateX(700px);
-      transform: translateX(700px); }
+      -webkit-transform: translateX(400px);
+      -ms-transform: translateX(400px);
+      transform: translateX(400px); }
     .img__text.m--in {
-      -webkit-transform: translateX(-700px);
-      -ms-transform: translateX(-700px);
-      transform: translateX(-700px); }
+      -webkit-transform: translateX(-400px);
+      -ms-transform: translateX(-400px);
+      transform: translateX(-400px); }
       .cont.s--signup .img__text.m--in {
         -webkit-transform: translateX(0);
         -ms-transform: translateX(0);
@@ -306,15 +306,12 @@ button {
       left: 0;
       top: 0;
       display: -webkit-box;
-      display: -webkit-flex;
       display: -ms-flexbox;
       display: flex;
       -webkit-box-pack: center;
-      -webkit-justify-content: center;
       -ms-flex-pack: center;
       justify-content: center;
       -webkit-box-align: center;
-      -webkit-align-items: center;
       -ms-flex-align: center;
       align-items: center;
       width: 100%;
@@ -372,22 +369,25 @@ input {
   background: #C7DDE2;
   text-transform: uppercase; }
 
-.sign-in {
+.log-in {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out; }
-  .cont.s--signup .sign-in {
+  .cont.s--signup .log-in {
     -webkit-transition-timing-function: ease-in-out;
     transition-timing-function: ease-in-out;
     -webkit-transition-duration: 1.2s;
     transition-duration: 1.2s;
-    -webkit-transform: translate3d(550px, 0, 0);
-    transform: translate3d(550px, 0, 0); }
+    -webkit-transform: translate3d(400px, 0, 0);
+    transform: translate3d(400px, 0, 0); }
 
 .sign-up {
-  -webkit-transform: translate3d(-900px, 0, 0);
-  transform: translate3d(-900px, 0, 0); }
+  -webkit-transform: translate3d(-600px, 0, 0);
+  transform: translate3d(-600px, 0, 0); }
   .cont.s--signup .sign-up {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
+
+.group-key {
+  display: none; }
 
 /*# sourceMappingURL=style.css.map */
