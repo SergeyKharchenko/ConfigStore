@@ -113,6 +113,12 @@ input, textarea, input[type="search"]:focus, :focus {
   font-style: normal;
   src: url("../fonts/RobotoBold/RobotoBold.ttf"), url("../fonts/RobotoBold/RobotoBold.eot") format("truetype"), url("../fonts/RobotoBold/RobotoBold.eot?#iefix") format("embedded-opentype"), url("../fonts/RobotoBold/RobotoBold.woff") format("woff"); }
 
+@font-face {
+  font-family: "font-awesome";
+  font-weight: normal;
+  font-style: normal;
+  src: url("../fonts/fontAwesome/fontawesome-webfont.ttf"), url("../fonts/fontAwesome/fontawesome-webfont.eot") format("truetype"), url("../fonts/fontAwesome/fontawesome-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/fontAwesome/fontawesome-webfont.woff") format("woff"); }
+
 /*!
  *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
@@ -2386,7 +2392,7 @@ input, button {
 .cont {
   overflow: hidden;
   position: relative;
-  width: 600px;
+  width: 700px;
   height: 520px;
   margin: 0px auto;
   background: #fff; }
@@ -2406,9 +2412,9 @@ input, button {
   position: absolute;
   left: 400px;
   top: 0;
-  width: 600px;
+  width: 700px;
   height: 100%;
-  padding-left: 200px;
+  padding-left: 300px;
   background: #fff;
   -webkit-transition: -webkit-transform 1.2s ease-in-out;
   transition: -webkit-transform 1.2s ease-in-out;
@@ -2433,7 +2439,7 @@ button {
   position: absolute;
   left: 0;
   top: 0;
-  width: 200px;
+  width: 300px;
   height: 100%;
   padding-top: 360px; }
   .img:before {
@@ -2441,7 +2447,7 @@ button {
     position: absolute;
     right: 0;
     top: 0;
-    width: 600px;
+    width: 700px;
     height: 100%;
     background-image: url("../img/form-bg.jpg");
     background-size: cover;
@@ -2480,13 +2486,13 @@ button {
       font-size: 14px;
       line-height: 1.5; }
     .cont.s--signup .img__text.m--up {
-      -webkit-transform: translateX(400px);
-      -ms-transform: translateX(400px);
-      transform: translateX(400px); }
+      -webkit-transform: translateX(600px);
+      -ms-transform: translateX(600px);
+      transform: translateX(600px); }
     .img__text.m--in {
-      -webkit-transform: translateX(-400px);
-      -ms-transform: translateX(-400px);
-      transform: translateX(-400px); }
+      -webkit-transform: translateX(-600px);
+      -ms-transform: translateX(-600px);
+      transform: translateX(-600px); }
       .cont.s--signup .img__text.m--in {
         -webkit-transform: translateX(0);
         -ms-transform: translateX(0);
@@ -2592,8 +2598,8 @@ input {
     transform: translate3d(400px, 0, 0); }
 
 .sign-up {
-  -webkit-transform: translate3d(-600px, 0, 0);
-  transform: translate3d(-600px, 0, 0); }
+  -webkit-transform: translate3d(-700px, 0, 0);
+  transform: translate3d(-700px, 0, 0); }
   .cont.s--signup .sign-up {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
