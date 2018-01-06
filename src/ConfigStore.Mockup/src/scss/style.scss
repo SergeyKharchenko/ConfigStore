@@ -297,3 +297,29 @@ input {
 .group-key{
 	display: none;
 }
+
+.reg{
+	position: relative;
+	display: block;
+	.load{
+		position: absolute;
+		right: 0;
+		top: 17px;
+		color: grey;
+		display: none;
+	}
+	.done{
+		position: absolute;
+		right: 0;
+		top: 17px;
+		color: green;
+		display: none;
+	}
+	.not-done{
+		position: absolute;
+		right: 0;
+		top: 17px;
+		color: red;
+		display: none;
+	}
+}

@@ -7,8 +7,41 @@ $(document).ready(function () {
         document.querySelector('.cont').classList.toggle('s--signup');
     });
 
-    let registrBtn = $('.btn-registr');
-    registrBtn.click(function () {
+    let timerId;
+
+    $('.app-name-reg').bind('input',function(e){
+        $('.done').css('display', 'none');
+        $('.not-done').css('display', 'none');
+        $('.load').css('display', 'block');
+        clearTimeout(timerId);
+        timerId = setTimeout(function() {
+                console.log('hi');
+                $.ajax({
+                    url: 'https://configstorage-api.azurewebsites.net/api/Application/canRegister',
+                    type: 'POST',
+                    data: JSON.stringify({name: $('.app-name-reg').val()}),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data){
+                        console.log(data.canRegisterApplication);
+                        if (data.canRegisterApplication) {
+                            $('.not-done').css('display', 'none');
+                            $('.load').css('display', 'none');
+                            $('.done').css('display', 'block')
+                        } else {
+                            $('.done').css('display', 'none');
+                            $('.load').css('display', 'none');
+                            $('.not-done').css('display', 'block')
+                        }
+                    }
+                })
+            }
+            ,2000);
+        });
+
+
+    $('.btn-registr').click(function () {
         $('.hint').val('');
         let appNameReg = $('.app-name-reg').val();
         $.ajax({
@@ -27,7 +60,7 @@ $(document).ready(function () {
                 }
 
             }
-        });
+        })
     });
     function getKey(appName){
         $.ajax({
