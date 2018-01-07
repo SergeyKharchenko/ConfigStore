@@ -252,18 +252,7 @@ paket-files/
 .idea/
 *.sln.iml
 
-# webpack builds
-**/wwwroot/build/
-
-# cake
-tools/
-
 # VS Code
 .vscode/
 
-# cake
-build.cake
-cake-config-local.cake
-
-#test diffs
-**/wwwroot/scripts/infrastructure/dateCorrection.jsx
+src/ConfigStore.Mockup/build/
