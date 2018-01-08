@@ -15,15 +15,19 @@
     </div>
 </div>
 <div class="right-line"></div>
-
+<!--././.-->
 <div class="cont">
     <div class="form log-in">
         <h2>LOGIN</h2>
-        <h3>Manage your application configuration in lightweight secure way</h3>
-        <label>
-            <span>Application name</span>
-            <input type="text" class="app-name"/>
-        </label>
+        <!--<h3>Manage your application configuration in lightweight secure way</h3>-->
+        <div class="input-group">
+            <input type="text" class="app-name" id="app-name"/>
+            <label for="app-name">Application name</label>
+        </div>
+
+
+
+
         <label>
             <span>Application key</span>
             <input type="text" class="app-key"/>
@@ -48,13 +52,13 @@
         </div>
         <div class="form sign-up">
             <h2>Registration</h2>
-            <label class="reg">
-                <span>App name</span>
-                <input type="text" class="app-name-reg"/>
-                <i class="fa fa-circle-o-notch fa-spin fa-fw load"></i>
-                <i class="fa fa-thumbs-o-up done"></i>
+            <div class="input-group">
+                <input type="text" class="app-name-reg" id="app-name-reg"/>
+                <label for="app-name-reg">App name</label>
+                <i class="fa fa-spinner fa-pulse fa-fw load"></i>
+                <i class="fa fa-check done"></i>
                 <i class="fa fa-thumbs-o-down not-done"></i>
-            </label>
+            </div>
             <label class="group-key">
                 <span>App key</span>
                 <input type="text" class="app-key-reg"/>
