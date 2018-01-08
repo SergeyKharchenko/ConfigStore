@@ -11,9 +11,10 @@ using System;
 namespace ConfigStore.Api.Migrations
 {
     [DbContext(typeof(ConfigStoreContext))]
-    partial class ConfigStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20180108135721_Add Index for Keys")]
+    partial class AddIndexforKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,14 +35,10 @@ namespace ConfigStore.Api.Migrations
                     b.HasIndex("Key")
                         .IsUnique();
 
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
-
                     b.ToTable("Applications");
                 });
 
-            modelBuilder.Entity("ConfigStore.Api.Data.Models.ServiceEnvironment", b =>
+            modelBuilder.Entity("ConfigStore.Api.Data.Models.ApplicationEnvironment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -57,9 +54,7 @@ namespace ConfigStore.Api.Migrations
                     b.HasIndex("Key")
                         .IsUnique();
 
-                    b.HasIndex("ServiceId", "Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Environments");
                 });
@@ -77,17 +72,15 @@ namespace ConfigStore.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationId");
+
                     b.HasIndex("Key")
                         .IsUnique();
-
-                    b.HasIndex("ApplicationId", "Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Services");
                 });
 
-            modelBuilder.Entity("ConfigStore.Api.Data.Models.ServiceEnvironment", b =>
+            modelBuilder.Entity("ConfigStore.Api.Data.Models.ApplicationEnvironment", b =>
                 {
                     b.HasOne("ConfigStore.Api.Data.Models.ApplicationService", "Service")
                         .WithMany("Environments")

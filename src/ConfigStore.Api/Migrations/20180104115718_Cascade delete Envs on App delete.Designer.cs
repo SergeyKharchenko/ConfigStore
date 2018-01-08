@@ -39,7 +39,7 @@ namespace ConfigStore.Api.Migrations
                     b.ToTable("Applications");
                 });
 
-            modelBuilder.Entity("ConfigStore.Api.Data.ApplicationEnvironment", b =>
+            modelBuilder.Entity("ConfigStore.Api.Data.ServiceEnvironment", b =>
                 {
                     b.Property<int>("ApplicationId");
 
@@ -50,7 +50,7 @@ namespace ConfigStore.Api.Migrations
                     b.ToTable("Environments");
                 });
 
-            modelBuilder.Entity("ConfigStore.Api.Data.ApplicationEnvironment", b =>
+            modelBuilder.Entity("ConfigStore.Api.Data.ServiceEnvironment", b =>
                 {
                     b.HasOne("ConfigStore.Api.Data.Application", "Application")
                         .WithMany("Environments")

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
@@ -50,11 +51,11 @@ namespace ConfigStore.Api.Infrastructure {
             return keyValuePairs;
         }
 
-        public async Task<IEnumerable<string>> GetConfigNamesAsync(string applicationName, string environmentName, bool decrypt = true) {
+        public async Task<IEnumerable<string>> GetConfigNamesAsync(Guid appKey, Guid servKey, Guid envKey, bool decrypt = true) {
             IEnumerable<string> names = await GetConfigNamesAsync();
             var configs =
                 from name in names
-                let configName = ConfigNameResolver.GetConfigName(applicationName, environmentName, name)
+                let configName = ConfigNameResolver.DecryptConfigName(appKey, servKey, envKey, name)
                 where configName != null
                 select new { ConfigName = configName, RawName = name };
             
@@ -68,20 +69,20 @@ namespace ConfigStore.Api.Infrastructure {
             return secretItems.Select(item => item.Identifier.Name);
         }
 
-        public async Task<string> GetConfigValueAsync(string applicationName, string environmentName, string configName) {
-            string configNameEncrypted = ConfigNameResolver.CreateConfigName(applicationName, environmentName, configName);
+        public async Task<string> GetConfigValueAsync(Guid appKey, Guid servKey, Guid envKey, string configName) {
+            string configNameEncrypted = ConfigNameResolver.CreateConfigName(appKey, servKey, envKey, configName);
             SecretBundle secretItem = await _client.GetSecretAsync(_keyVaultUrl, configNameEncrypted);
             return secretItem.Value;
         }
 
-        public async Task AddConfigAsync(string applicationName, string environmentName, string configName, string configValue) {
-            string configNameEncrypted = ConfigNameResolver.CreateConfigName(applicationName, environmentName, configName);
+        public async Task AddConfigAsync(Guid appKey, Guid servKey, Guid envKey, string configName, string configValue) {
+            string configNameEncrypted = ConfigNameResolver.CreateConfigName(appKey, servKey, envKey, configName);
             await _client.SetSecretAsync(_keyVaultUrl, configNameEncrypted, configValue);
         }
 
-        public async Task RemoveConfigsAsync(string applicationName, string environmentName) {
+        public async Task RemoveConfigsAsync(Guid appKey, Guid servKey, Guid envKey) {
             IEnumerable<string> configNames = 
-                await GetConfigNamesAsync(applicationName, environmentName, decrypt: false);
+                await GetConfigNamesAsync(appKey, servKey, envKey, decrypt: false);
             await RemoveConfigsAsync(configNames);
         }
 
@@ -90,8 +91,8 @@ namespace ConfigStore.Api.Infrastructure {
             await Task.WhenAll(removeTasks);
         }
 
-        public async Task RemoveConfigAsync(string applicationName, string environmentName, string configName) {
-            string configNameEncrypted = ConfigNameResolver.CreateConfigName(applicationName, environmentName, configName);
+        public async Task RemoveConfigAsync(Guid appKey, Guid servKey, Guid envKey, string configName) {
+            string configNameEncrypted = ConfigNameResolver.CreateConfigName(appKey, servKey, envKey, configName);
             await RemoveConfigAsync(configNameEncrypted);
         }
 

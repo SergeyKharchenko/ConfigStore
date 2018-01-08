@@ -50,10 +50,14 @@ namespace ConfigStore.Api {
                         builder.Requirements.Add(new AuthorizationApplicationHandler(ActionWithContext));
                     });
 
+                options.AddPolicy("service", builder => {
+                        builder.Requirements.Add(new AuthorizationServiceHandler(ActionWithContext));
+                    });
+
                 options.AddPolicy("environment", builder => {
                         builder.Requirements.Add(new AuthorizationEnvironmentHandler(ActionWithContext));
                     });
-                });
+            });
 
             services.AddAuthentication(options => options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer();
@@ -73,6 +77,7 @@ namespace ConfigStore.Api {
 
             services.AddSingleton(Configuration);
             services.AddScoped<ConfigClient>();
+            services.AddScoped<DefaultDataInitializer>();
         }
 
         private async Task<string> GetAccessToken(string authority, string resource, string scope) {
@@ -106,7 +111,6 @@ namespace ConfigStore.Api {
             using (IServiceScope serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope()) {
                 ConfigStoreContext context = serviceScope.ServiceProvider.GetRequiredService<ConfigStoreContext>();
                 context.Database.SetCommandTimeout(TimeSpan.FromMinutes(5));
-                await context.Database.EnsureDeletedAsync();
                 await context.Database.MigrateAsync();
 
                 ConfigClient client = serviceScope.ServiceProvider.GetRequiredService<ConfigClient>();

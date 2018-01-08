@@ -11,9 +11,10 @@ using System;
 namespace ConfigStore.Api.Migrations
 {
     [DbContext(typeof(ConfigStoreContext))]
-    partial class ConfigStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20180108135943_Add Unique Index For Names")]
+    partial class AddUniqueIndexForNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +42,7 @@ namespace ConfigStore.Api.Migrations
                     b.ToTable("Applications");
                 });
 
-            modelBuilder.Entity("ConfigStore.Api.Data.Models.ServiceEnvironment", b =>
+            modelBuilder.Entity("ConfigStore.Api.Data.Models.ApplicationEnvironment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -87,7 +88,7 @@ namespace ConfigStore.Api.Migrations
                     b.ToTable("Services");
                 });
 
-            modelBuilder.Entity("ConfigStore.Api.Data.Models.ServiceEnvironment", b =>
+            modelBuilder.Entity("ConfigStore.Api.Data.Models.ApplicationEnvironment", b =>
                 {
                     b.HasOne("ConfigStore.Api.Data.Models.ApplicationService", "Service")
                         .WithMany("Environments")

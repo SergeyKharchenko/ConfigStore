@@ -5,31 +5,36 @@ using ConfigStore.Api.Data.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ConfigStore.Api.Authorization {
-    public class AuthorizationEnvironmentHandler : AuthorizationApplicationHandler {
-        public const string EnvironmentNameHeaderName = "CS-Environment-Key";
+    public class AuthorizationEnvironmentHandler : AuthorizationServiceHandler {
+        public const string EnvironmentKeyHeaderName = "CS-Environment-Key";
 
-        public AuthorizationEnvironmentHandler(Action<Action<ConfigStoreContext>> executeActionWithContext) : base(executeActionWithContext) {
-        }
+        public AuthorizationEnvironmentHandler(Action<Action<ConfigStoreContext>> executeActionWithContext) : 
+            base(executeActionWithContext) { }
 
         protected override ApplicationIdentity CreateIdentity(AuthorizationFilterContext filterContext) {
             Application application = GetApplication(filterContext);
             if (application == null) {
                 return null;
             }
-            var environmentName = (string)filterContext.HttpContext.Request.Headers[EnvironmentNameHeaderName];
-            if (string.IsNullOrWhiteSpace(environmentName)) {
+            ApplicationService service = GetService(filterContext);
+            if (service == null) {
+                return null;
+            }
+            ServiceEnvironment environment = GetEnvironment(filterContext);
+            return environment == null ? null : new EnvironmentIdentity(application, service, environment);
+        }
+
+        protected ServiceEnvironment GetEnvironment(AuthorizationFilterContext filterContext) {
+            if (!Guid.TryParse(filterContext.HttpContext.Request.Headers[EnvironmentKeyHeaderName], out Guid envKey)) {
                 return null;
             }
 
-            ApplicationEnvironment environment = null;
+            ServiceEnvironment service = null;
             ExecuteActionWithContext(context =>
-                                         environment = context.Environments.FirstOrDefault(env =>
-                                                                                 env.ApplicationId == application.Id &&
-                                                                                 env.Name == environmentName));
-            if (environment == null) {
-                return null;
-            }
-            return new EnvironmentIdentity(application, environment);
+                                         service =
+                                             context.Environments
+                                                    .FirstOrDefault(env => env.Key == envKey));
+            return service;
         }
     }
 }

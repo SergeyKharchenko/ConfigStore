@@ -36,14 +36,14 @@ namespace ConfigStore.Api.Authorization {
 
         protected Application GetApplication(AuthorizationFilterContext filterContext) {
             var applicationKey = (string)filterContext.HttpContext.Request.Headers[ApplicationKeyHeaderName];
-            if (string.IsNullOrWhiteSpace(applicationKey)) {
-                return null;
-            }
             if (!Guid.TryParse(applicationKey, out Guid key)) {
                 return null;
             }
             Application application = null;
-            ExecuteActionWithContext(dbContext => application = dbContext.Applications.FirstOrDefault(app => app.Key == key));
+            ExecuteActionWithContext(dbContext =>
+                                         application =
+                                             dbContext.Applications
+                                                      .FirstOrDefault(app => app.Key == key));
             return application;
         }
     }
