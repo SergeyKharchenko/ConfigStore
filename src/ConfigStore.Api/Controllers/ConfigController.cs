@@ -69,15 +69,5 @@ namespace ConfigStore.Api.Controllers {
             }
             return Ok();
         }
-
-        [HttpPost("_configs")]
-        public async Task<IActionResult> GetConfigs() {
-            return Json(await _client.GetConfigsAsync());
-        }
-
-        [HttpPost("_keys")]
-        public async Task<IActionResult> GetKeys() {
-            return Json(await _client.GetKeysAsync());
-        }
     }
 }

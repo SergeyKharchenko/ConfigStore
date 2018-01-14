@@ -11,6 +11,7 @@ using ConfigStore.Api.Dto.Output;
 using ConfigStore.Api.Enums;
 using ConfigStore.Api.Extensions;
 using ConfigStore.Api.Infrastructure;
+using ConfigStore.Api.Infrastructure.ActionHandlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +23,19 @@ namespace ConfigStore.Api.Controllers {
         private readonly ConfigStoreContext _context;
         private readonly ConfigClient _client;
         private readonly DefaultDataInitializer _defaultDataInitializer;
+        private readonly RenameModelActionHandler<Application> _renameModelActionHandler;
+        private readonly CanAddModelActionHandler<Application> _canAddModelActionHandler;
 
-        public ApplicationController(ConfigStoreContext context, ConfigClient client, DefaultDataInitializer defaultDataInitializer) {
+        public ApplicationController(ConfigStoreContext context,
+                                     ConfigClient client,
+                                     DefaultDataInitializer defaultDataInitializer,
+                                     RenameModelActionHandler<Application> renameModelActionHandler,
+                                     CanAddModelActionHandler<Application> canAddModelActionHandler) {
             _context = context;
             _client = client;
             _defaultDataInitializer = defaultDataInitializer;
+            _renameModelActionHandler = renameModelActionHandler;
+            _canAddModelActionHandler = canAddModelActionHandler;
         }
 
         [HttpPost("canRegister")]
@@ -34,9 +43,8 @@ namespace ConfigStore.Api.Controllers {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
-            string name = nameDto.Name.ToLower();
-            bool canRegisterApplication = !await _context.Applications.AnyAsync(app => app.Name == name);
-            return Json(new { canRegisterApplication });
+            bool canAdd = await _canAddModelActionHandler.Do(nameDto.Name);
+            return Json(new { canRegisterApplication = canAdd });
         }
 
         [HttpPost("register")]
@@ -129,6 +137,15 @@ namespace ConfigStore.Api.Controllers {
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpPost("rename")]
+        public async Task<IActionResult> Rename([FromBody] KeyNameDto keyNameDto) {
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+            bool result = await _renameModelActionHandler.Do(keyNameDto.Key, keyNameDto.Name);
+            return result ? Ok() : StatusCode((int)HttpStatusCode.Unauthorized);
         }
     }
 }

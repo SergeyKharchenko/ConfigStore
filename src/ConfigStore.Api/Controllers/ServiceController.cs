@@ -11,6 +11,7 @@ using ConfigStore.Api.Dto.Output;
 using ConfigStore.Api.Enums;
 using ConfigStore.Api.Extensions;
 using ConfigStore.Api.Infrastructure;
+using ConfigStore.Api.Infrastructure.ActionHandlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +23,19 @@ namespace ConfigStore.Api.Controllers {
         private readonly ConfigStoreContext _context;
         private readonly ConfigClient _client;
         private readonly DefaultDataInitializer _defaultDataInitializer;
+        private readonly RenameModelActionHandler<ApplicationService> _renameModelActionHandler;
+        private readonly CanAddModelActionHandler<ApplicationService> _canAddModelActionHandler;
 
-        public ServiceController(ConfigStoreContext context, ConfigClient client, DefaultDataInitializer defaultDataInitializer) {
+        public ServiceController(ConfigStoreContext context,
+                                 ConfigClient client,
+                                 DefaultDataInitializer defaultDataInitializer,
+                                 RenameModelActionHandler<ApplicationService> renameModelActionHandler,
+                                 CanAddModelActionHandler<ApplicationService> canAddModelActionHandler) {
             _context = context;
             _client = client;
             _defaultDataInitializer = defaultDataInitializer;
+            _renameModelActionHandler = renameModelActionHandler;
+            _canAddModelActionHandler = canAddModelActionHandler;
         }
 
         [HttpPost("add")]
@@ -75,6 +84,24 @@ namespace ConfigStore.Api.Controllers {
             _context.Services.Remove(service);
             await _context.SaveChangesAsync();
             return Ok();
+        }
+
+        [HttpPost("rename")]
+        public async Task<IActionResult> Rename([FromBody] KeyNameDto keyNameDto) {
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+            bool result = await _renameModelActionHandler.Do(keyNameDto.Key, keyNameDto.Name);
+            return result ? Ok() : StatusCode((int)HttpStatusCode.Unauthorized);
+        }
+
+        [HttpPost("canAdd")]
+        public async Task<IActionResult> CanRegister([FromBody] NameDto nameDto) {
+            if (!ModelState.IsValid) {
+                return this.ValidationError();
+            }
+            bool canAdd = await _canAddModelActionHandler.Do(nameDto.Name);
+            return Json(new { canAdd });
         }
     }
 }

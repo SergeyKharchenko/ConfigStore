@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ConfigStore.Api.Authorization;
 using ConfigStore.Api.Data;
 using ConfigStore.Api.Infrastructure;
+using ConfigStore.Api.Infrastructure.ActionHandlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -78,6 +79,8 @@ namespace ConfigStore.Api {
             services.AddSingleton(Configuration);
             services.AddScoped<ConfigClient>();
             services.AddScoped<DefaultDataInitializer>();
+            services.AddScoped(typeof(RenameModelActionHandler<>)); 
+            services.AddScoped(typeof(CanAddModelActionHandler<>)); 
         }
 
         private async Task<string> GetAccessToken(string authority, string resource, string scope) {

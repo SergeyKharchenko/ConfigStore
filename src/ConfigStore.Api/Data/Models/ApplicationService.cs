@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 
 namespace ConfigStore.Api.Data.Models {
-    public class ApplicationService {
-        public int Id { get; set; }
-
-        public Guid Key { get; set; }
-        
-        public string Name { get; set; }
-
+    public class ApplicationService : ModelBase {
         public virtual Application Application { get; set; }
 
         public int ApplicationId { get; set; }
