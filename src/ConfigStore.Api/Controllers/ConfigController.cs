@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using ConfigStore.Api.Data.Models;
 using ConfigStore.Api.Dto.Input;
 using ConfigStore.Api.Dto.Output;
 using ConfigStore.Api.Enums;
@@ -20,7 +21,10 @@ namespace ConfigStore.Api.Controllers {
 
         [HttpPost("names")]
         public async Task<IActionResult> GetNames() {
-            return Json(await _client.GetConfigNamesAsync(this.GetApplicationName(), this.GetEnvironmentName()));
+            Application app = this.GetApplication();
+            ApplicationService serv = this.GetService();
+            ServiceEnvironment env = this.GetEnvironment();
+            return Json(await _client.GetConfigNamesAsync(app.Key, serv.Key, env.Key));
         }
 
         [HttpPost("value")]
@@ -28,19 +32,25 @@ namespace ConfigStore.Api.Controllers {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
+            Application app = this.GetApplication();
+            ApplicationService serv = this.GetService();
+            ServiceEnvironment env = this.GetEnvironment();
             try {
-                 return Json(await _client.GetConfigValueAsync(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name));
+                return Json(await _client.GetConfigValueAsync(app.Key, serv.Key, env.Key, nameDto.Name));
             } catch (KeyVaultErrorException) {
                 return Json(ErrorDto.Create(ErrorCodes.ConfigNameNotFound));
             }
         }
 
-        [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] AddConfigDto addConfigDto) {
+        [HttpPost("addOrUpdate")]
+        public async Task<IActionResult> AddOrUpdate([FromBody] AddConfigDto addConfigDto) {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
-            await _client.AddConfigAsync(this.GetApplicationName(), this.GetEnvironmentName(), addConfigDto.ConfigName, addConfigDto.ConfigValue);
+            Application app = this.GetApplication();
+            ApplicationService serv = this.GetService();
+            ServiceEnvironment env = this.GetEnvironment();
+            await _client.AddConfigAsync(app.Key, serv.Key, env.Key, addConfigDto.ConfigName, addConfigDto.ConfigValue);
             return Ok();
         }
 
@@ -49,22 +59,15 @@ namespace ConfigStore.Api.Controllers {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
+            Application app = this.GetApplication();
+            ApplicationService serv = this.GetService();
+            ServiceEnvironment env = this.GetEnvironment();
             try {
-                await _client.RemoveConfigAsync(this.GetApplicationName(), this.GetEnvironmentName(), nameDto.Name);
+                await _client.RemoveConfigAsync(app.Key, serv.Key, env.Key, nameDto.Name);
             } catch (KeyVaultErrorException) {
                 return Json(ErrorDto.Create(ErrorCodes.ConfigNameNotFound));
             }
             return Ok();
-        }
-
-        [HttpPost("_configs")]
-        public async Task<IActionResult> GetConfigs() {
-            return Json(await _client.GetConfigsAsync());
-        }
-
-        [HttpPost("_keys")]
-        public async Task<IActionResult> GetKeys() {
-            return Json(await _client.GetKeysAsync());
         }
     }
 }

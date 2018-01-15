@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using ConfigStore.Api.Data;
@@ -16,19 +18,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConfigStore.Api.Controllers {
     [Route("api/[controller]")] 
-    [Authorize("service")]
-    public class EnvironmentController : Controller {
+    [Authorize("application")]
+    public class ServiceController : Controller {
         private readonly ConfigStoreContext _context;
         private readonly ConfigClient _client;
         private readonly DefaultDataInitializer _defaultDataInitializer;
-        private readonly RenameModelActionHandler<ServiceEnvironment> _renameModelActionHandler;
-        private readonly CanAddModelActionHandler<ServiceEnvironment> _canAddModelActionHandler;
+        private readonly RenameModelActionHandler<ApplicationService> _renameModelActionHandler;
+        private readonly CanAddModelActionHandler<ApplicationService> _canAddModelActionHandler;
 
-        public EnvironmentController(ConfigStoreContext context,
-                                     ConfigClient client,
-                                     DefaultDataInitializer defaultDataInitializer,
-                                     RenameModelActionHandler<ServiceEnvironment> renameModelActionHandler,
-                                     CanAddModelActionHandler<ServiceEnvironment> canAddModelActionHandler) {
+        public ServiceController(ConfigStoreContext context,
+                                 ConfigClient client,
+                                 DefaultDataInitializer defaultDataInitializer,
+                                 RenameModelActionHandler<ApplicationService> renameModelActionHandler,
+                                 CanAddModelActionHandler<ApplicationService> canAddModelActionHandler) {
             _context = context;
             _client = client;
             _defaultDataInitializer = defaultDataInitializer;
@@ -41,23 +43,24 @@ namespace ConfigStore.Api.Controllers {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
-            
-            Application application = this.GetApplication();
-            ApplicationService service = this.GetService();
-            Guid envKey = Guid.NewGuid();
+
+            Application app = this.GetApplication();
+            Guid servKey = Guid.NewGuid();
 
             try {
-                await _defaultDataInitializer.CreateDefaultConfig(application.Key, service.Key, envKey);
-                await _context.Environments.AddAsync(new ServiceEnvironment {
-                    Key = envKey,
+                var service = new ApplicationService {
                     Name = nameDto.Name,
-                    ServiceId = service.Id
-                });
+                    Key = servKey,
+                    Environments = await _defaultDataInitializer.CreateDefaultEnvironments(app.Key, servKey),
+                    ApplicationId = app.Id
+                };
+                await _context.Services.AddAsync(service);
                 await _context.SaveChangesAsync();
             } catch (DbUpdateException e) when ((e.InnerException as SqlException)?.ErrorCode == -2146232060) {
-                return Json(ErrorDto.Create(ErrorCodes.EnvironmentNameAleadyBusy));
+                return Json(ErrorDto.Create(ErrorCodes.ServiceNameAleadyBusy));
             }
-            return Ok(new { EnvironmentKey = envKey });
+
+            return Ok(new { ServiceKey = servKey });
         }
 
         [HttpPost("remove")]
@@ -66,14 +69,19 @@ namespace ConfigStore.Api.Controllers {
                 return this.ValidationError();
             }
 
-            Application application = this.GetApplication();
-            ApplicationService service = this.GetService();
-            ServiceEnvironment environment = await _context.Environments.FirstOrDefaultAsync(env => env.Key == keyDto.Key);
-            if (environment == null) {
+            Application app = this.GetApplication();
+            ApplicationService service = await _context.Services.FirstOrDefaultAsync(serv => serv.Key == keyDto.Key);
+            if (service == null) {
                 return StatusCode((int)HttpStatusCode.Unauthorized);
             }
-            await _client.RemoveConfigsAsync(application.Key, service.Key, environment.Key);
-            _context.Environments.Remove(environment);
+            List<ServiceEnvironment> envs = 
+                await _context.Environments.Where(env => env.ServiceId == service.Id).ToListAsync();
+
+            IEnumerable<Task> removeConfigTasks =
+                envs.Select(async env => await _client.RemoveConfigsAsync(app.Key, service.Key, env.Key));
+            await Task.WhenAll(removeConfigTasks);
+
+            _context.Services.Remove(service);
             await _context.SaveChangesAsync();
             return Ok();
         }

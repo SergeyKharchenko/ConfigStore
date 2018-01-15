@@ -16,25 +16,36 @@ namespace ConfigStore.Api.Authorization {
                 operation.Parameters = new List<IParameter>();
             }
 
-            if (ShouldAddHeadder(context?.ApiDescription?.ActionDescriptor, "application", "environment")) {
+            if (ShouldAddHeadder(context?.ApiDescription?.ActionDescriptor, "application", "service", "environment")) {
                 operation.Parameters.Add(new NonBodyParameter {
                     Name = AuthorizationApplicationHandler.ApplicationKeyHeaderName,
                     In = "header",
-                    Description = "Key of registered application",
+                    Description = "Key of application",
                     Required = true,
-                    Type = "string",
-                    Default = DbInitializer.DefaultAppKey
+                    Type = typeof(Guid).FullName,
+                    Default = DbInitializer.DefaultApplicationKey
+                });
+            }
+
+            if (ShouldAddHeadder(context?.ApiDescription?.ActionDescriptor, "service", "environment")) {
+                operation.Parameters.Add(new NonBodyParameter {
+                    Name = AuthorizationServiceHandler.ServiceKeyHeaderName,
+                    In = "header",
+                    Description = "Key of service",
+                    Required = true,
+                    Type = typeof(Guid).FullName,
+                    Default = DbInitializer.DefaultServiceKey
                 });
             }
 
             if (ShouldAddHeadder(context?.ApiDescription?.ActionDescriptor, "environment")) {
                 operation.Parameters.Add(new NonBodyParameter {
-                    Name = AuthorizationEnvironmentHandler.EnvironmentNameHeaderName,
+                    Name = AuthorizationEnvironmentHandler.EnvironmentKeyHeaderName,
                     In = "header",
-                    Description = "Name of environment",
+                    Description = "Key of environment",
                     Required = true,
-                    Type = "string",
-                    Default = "Development"
+                    Type = typeof(Guid).FullName,
+                    Default = DbInitializer.DefaultEnvironmentKey
                 });
             }
         }
