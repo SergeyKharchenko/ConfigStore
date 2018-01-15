@@ -42,8 +42,8 @@ namespace ConfigStore.Api.Controllers {
             }
         }
 
-        [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] AddConfigDto addConfigDto) {
+        [HttpPost("addOrUpdate")]
+        public async Task<IActionResult> AddOrUpdate([FromBody] AddConfigDto addConfigDto) {
             if (!ModelState.IsValid) {
                 return this.ValidationError();
             }
