@@ -3,31 +3,21 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 
-import { MatButtonModule } from '@angular/material';
-import { MatInputModule } from '@angular/material/input';
-
 import { AppComponent } from './components/app/app.component';
 
-import { WelcomeComponent } from '../welcome/welcome.component';
 import { WorkbenchModule } from '../workbench/workbench.module';
-
-const routes: Routes = [
-  { path: '', component: WelcomeComponent }
-];
+import { LoginModule } from '../login/login.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    WelcomeComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot([]),
 
-    MatButtonModule,
-    MatInputModule,
-
+    LoginModule,
     WorkbenchModule
   ],
   providers: [],
