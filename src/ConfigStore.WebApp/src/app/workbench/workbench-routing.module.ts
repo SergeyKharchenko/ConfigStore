@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WorkbenchComponent } from './workbench.component';
+import { WorkbenchComponent } from './components/workbench.component';
 
 const routes: Routes = [
   { path: 'workbench', component: WorkbenchComponent }

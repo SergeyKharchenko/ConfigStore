@@ -6,9 +6,10 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material';
 import { MatInputModule } from '@angular/material/input';
 
-import { AppComponent } from './app.component';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { WorkbenchModule } from './workbench/workbench.module';
+import { AppComponent } from './components/app/app.component';
+
+import { WelcomeComponent } from '../welcome/welcome.component';
+import { WorkbenchModule } from '../workbench/workbench.module';
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent }
