@@ -6,8 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  applicationName: string;
 
-  constructor() { }
+  constructor() { 
+    this.applicationName = "some app";
+  }
 
   ngOnInit() {
   }
