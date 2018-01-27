@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Rest.Azure;
 
 namespace ConfigStore.Api.Infrastructure {
     public class ConfigClient {
@@ -17,56 +16,33 @@ namespace ConfigStore.Api.Infrastructure {
             _keyVaultUrl = configuration["KeyVaultUrl"];
         }
 
-        public async Task<List<KeyValuePair<string, string>>> GetConfigsAsync() {
-            List<Task<SecretBundle>> secretTasks =
-                (await _client.GetSecretsAsync(_keyVaultUrl))
-                .AsEnumerable()
-                .Select(async secretItem => await _client.GetSecretAsync(secretItem.Id))
-                .ToList();
-
-            await Task.WhenAll(secretTasks);
-
-            List<KeyValuePair<string, string>> keyValuePairs =
-                secretTasks.Select(secret => secret.Result)
-                          .Select(secret => new KeyValuePair<string, string>(secret.SecretIdentifier.Name, secret.Value))
-                          .ToList();
-
-            return keyValuePairs;
-        }
-
-        public async Task<List<KeyValuePair<string, byte[]>>> GetKeysAsync() {
-            List<Task<KeyBundle>> keyTasks =
-                (await _client.GetKeysAsync(_keyVaultUrl))
-                .AsEnumerable()
-                .Select(async keyItem => await _client.GetKeyAsync(keyItem.Identifier.Identifier))
-                .ToList();
-
-            await Task.WhenAll(keyTasks);
-
-            List<KeyValuePair<string, byte[]>> keyValuePairs =
-                keyTasks.Select(secret => secret.Result)
-                       .Select(key => new KeyValuePair<string, byte[]>(key.KeyIdentifier.Name, key.Key.N))
-                       .ToList();
-
-            return keyValuePairs;
+        public async Task<IEnumerable<(string Name, string Value)>> GetConfigsAsync(Guid appKey, Guid servKey, Guid envKey) {
+            IEnumerable<SecretItem> secretItems = await GetSecretItemsAsync(appKey, servKey, envKey);
+            List<Task<(string Name, string Value)>> valueTasks = secretItems.Select(async item => (
+                ConfigNameResolver.DecryptConfigName(appKey, servKey, envKey, item.Identifier.Name),
+                (await _client.GetSecretAsync(_keyVaultUrl, item.Identifier.Name)).Value
+            )).ToList();
+            await Task.WhenAll(valueTasks);
+            return valueTasks.Select(task => (task.Result.Name, task.Result.Value));
         }
 
         public async Task<IEnumerable<string>> GetConfigNamesAsync(Guid appKey, Guid servKey, Guid envKey, bool decrypt = true) {
-            IEnumerable<string> names = await GetConfigNamesAsync();
-            var configs =
-                from name in names
-                let configName = ConfigNameResolver.DecryptConfigName(appKey, servKey, envKey, name)
-                where configName != null
-                select new { ConfigName = configName, RawName = name };
-            
+            IEnumerable<SecretItem> secretItems = await GetSecretItemsAsync(appKey, servKey, envKey);
             return decrypt 
-                ? configs.Select(config => config.ConfigName) 
-                : configs.Select(config => config.RawName);
+                ? secretItems.Select(item => ConfigNameResolver.DecryptConfigName(appKey, servKey, envKey, item.Identifier.Name)) 
+                : secretItems.Select(item => item.Identifier.Name);
         }
 
-        private async Task<IEnumerable<string>> GetConfigNamesAsync() {
-            IPage<SecretItem> secretItems = await _client.GetSecretsAsync(_keyVaultUrl);
-            return secretItems.Select(item => item.Identifier.Name);
+        private async Task<IEnumerable<SecretItem>> GetSecretItemsAsync(Guid appKey, Guid servKey, Guid envKey) {
+            IEnumerable<SecretItem> secretItems = await GetSecretItemsAsync();
+            return from item in secretItems
+                   let configName = ConfigNameResolver.DecryptConfigName(appKey, servKey, envKey, item.Identifier.Name)
+                   where configName != null
+                   select item;
+        }
+
+        private async Task<IEnumerable<SecretItem>> GetSecretItemsAsync() {
+            return await _client.GetSecretsAsync(_keyVaultUrl);
         }
 
         public async Task<string> GetConfigValueAsync(Guid appKey, Guid servKey, Guid envKey, string configName) {
@@ -101,8 +77,30 @@ namespace ConfigStore.Api.Infrastructure {
         }
 
         public async Task ClearAsync() {
-            IEnumerable<string> names = await GetConfigNamesAsync();
-            await RemoveConfigsAsync(names);
+            IEnumerable<SecretItem> configs = await GetSecretItemsAsync();
+            await RemoveConfigsAsync(configs.Select(config => config.Identifier.Name));
+        }
+
+
+
+
+
+
+        public async Task<List<KeyValuePair<string, byte[]>>> __GetKeysAsync() {
+            List<Task<KeyBundle>> keyTasks =
+                (await _client.GetKeysAsync(_keyVaultUrl))
+                .AsEnumerable()
+                .Select(async keyItem => await _client.GetKeyAsync(keyItem.Identifier.Identifier))
+                .ToList();
+
+            await Task.WhenAll(keyTasks);
+
+            List<KeyValuePair<string, byte[]>> keyValuePairs =
+                keyTasks.Select(secret => secret.Result)
+                        .Select(key => new KeyValuePair<string, byte[]>(key.KeyIdentifier.Name, key.Key.N))
+                        .ToList();
+
+            return keyValuePairs;
         }
     }
 }
