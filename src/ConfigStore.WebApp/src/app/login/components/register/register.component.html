@@ -1,17 +1,25 @@
-<mat-form-field>
-  <input matInput placeholder='Application name' 
-  [(ngModel)]='applicationName'
-  (ngModelChange)='onApplicationNameChanged()' 
-/>
-</mat-form-field>
-<mat-icon class='ok' *ngIf='applicationNameValid === true'>done</mat-icon>
-<mat-icon class='fail' *ngIf='applicationNameValid === false'>clear</mat-icon>
-<mat-spinner [diameter]='25'></mat-spinner>
+<div>
+  <mat-form-field>
+    <input matInput placeholder='Application name' [(ngModel)]='applicationName' (ngModelChange)='onApplicationNameChanged()' />
+  </mat-form-field>
+  <mat-icon *ngIf='applicationNameValid === true' class='ok'>done</mat-icon>
+  <mat-icon *ngIf='applicationNameValid === false' class='fail'>clear</mat-icon>
+</div>
 
-  <!-- (keyup)='onRegisterInputKeyUp($event.target.value)' -->
+<div *ngIf='applicationKey'>
+  <mat-form-field>
+    <input matInput placeholder='Application key' [value]='applicationKey' class='application-key' readonly />
+  </mat-form-field>
+</div>
+
+<mat-spinner *ngIf='loading' [diameter]='25'></mat-spinner>
+
+<div>
+  <button mat-raised-button [disabled]='applicationNameValid !== true || loading' color="primary" (click)='onRegisterButtonClick()'>Register</button>
+</div>
 
 <div>
   <a [routerLink]="['/']">
-    Login
+    To login
   </a>
 </div>

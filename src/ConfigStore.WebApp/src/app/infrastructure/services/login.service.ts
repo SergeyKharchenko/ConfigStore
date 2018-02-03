@@ -15,7 +15,18 @@ export class LoginService {
     } catch (e) {
       const errorResponse = <Response>e;
       console.log(errorResponse.json());
-      return false;
+      throw e;
+    }
+  }
+
+  async register(value: string): Promise<string> {
+    try {
+      const response = await this._http.post(`${this.baseUrl}/register`, { name: value }).toPromise();
+      return response.json().applicationKey;
+    } catch (e) {
+      const errorResponse = <Response>e;
+      console.log(errorResponse.json());
+      throw e;
     }
   }
 }

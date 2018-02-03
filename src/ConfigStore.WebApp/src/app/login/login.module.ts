@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './components/login/login.component';
 
-import { MatInputModule, MatIconModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatInputModule, MatIconModule, MatProgressSpinnerModule, MatButtonModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LoginService } from '../infrastructure/services/login.service';
@@ -21,6 +21,7 @@ import { RegisterComponent } from './components/register/register.component';
     MatInputModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatButtonModule,
 
     FormsModule, 
     ReactiveFormsModule

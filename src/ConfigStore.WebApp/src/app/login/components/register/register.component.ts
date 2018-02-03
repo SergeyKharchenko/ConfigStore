@@ -8,6 +8,8 @@ import { LoginService } from '../../../infrastructure/services/login.service';
 export class RegisterComponent implements OnInit {
   applicationName: string;
   applicationNameValid: boolean | null = null;
+  loading: boolean;
+  applicationKey: string;
 
   constructor(private _loginService: LoginService) { 
   }
@@ -16,9 +18,17 @@ export class RegisterComponent implements OnInit {
   }
 
   async onApplicationNameChanged() {
-    this.applicationNameValid = this.applicationName
-      ? await this._loginService.isRegistered(this.applicationName)
-      : null;
+    if (!this.applicationName || this.applicationName.length < 2) {
+      return;
+    }
+    this.loading = true;
+    this.applicationNameValid = await this._loginService.isRegistered(this.applicationName);
+    this.loading = false;
+  }
 
+  async onRegisterButtonClick() {
+    this.loading = true;
+    this.applicationKey = await this._loginService.register(this.applicationName);
+    this.loading = false;
   }
 }
