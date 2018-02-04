@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Http, Response } from '@angular/http';
+import { Application } from '../models/application';
 
 @Injectable()
 export class LoginService {
@@ -18,8 +19,8 @@ export class LoginService {
     return result.applicationKey;
   }
 
-  async login(key: string): Promise<any> {
-    const result =  await this.request('login', { key });
+  async login(key: string): Promise<Application> {
+    const result =  await this.request<Application>('login', { key });
     return result;
   }
 
