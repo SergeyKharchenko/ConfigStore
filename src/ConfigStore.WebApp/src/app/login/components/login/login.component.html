@@ -1,3 +1,19 @@
-<a [routerLink]="['/register']">
-  Register
-</a>
+<div>
+  <mat-form-field>
+    <input matInput placeholder='Application key' [(ngModel)]='applicationKey' />
+  </mat-form-field>
+</div>
+
+<div>
+  <mat-spinner *ngIf='loading' [diameter]='25'></mat-spinner>
+</div>
+
+<div>
+  <button mat-raised-button [disabled]='!applicationKey' color="primary" (click)='onLoginButtonClick()'>Login</button>
+</div>
+
+<div>
+  <a [routerLink]="['/register']">
+    Tp register
+  </a>
+</div>

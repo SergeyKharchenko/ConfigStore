@@ -6,8 +6,7 @@ import { LoginService } from '../../../infrastructure/services/login.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  applicationName: string;
-  applicationNameValid: boolean | null = null;
+  applicationKey: string;
 
   constructor(private _loginService: LoginService) { 
   }
@@ -15,10 +14,10 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  async onApplicationNameChanged() {
-    this.applicationNameValid = this.applicationName
-      ? await this._loginService.isRegistered(this.applicationName)
-      : null;
-
+  async onLoginButtonClick() {
+    if (!this.applicationKey) {
+      return;
+    }
+    this._loginService.login(this.applicationKey);
   }
 }

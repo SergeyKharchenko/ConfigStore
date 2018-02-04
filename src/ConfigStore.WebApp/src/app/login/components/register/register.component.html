@@ -12,7 +12,9 @@
   </mat-form-field>
 </div>
 
-<mat-spinner *ngIf='loading' [diameter]='25'></mat-spinner>
+<div>
+  <mat-spinner *ngIf='loading' [diameter]='25'></mat-spinner>
+</div>
 
 <div>
   <button mat-raised-button [disabled]='applicationNameValid !== true || loading' color="primary" (click)='onRegisterButtonClick()'>Register</button>
