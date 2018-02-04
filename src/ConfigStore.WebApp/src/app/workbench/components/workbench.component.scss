@@ -1,3 +1,22 @@
+.app-name-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .app-name {
+        margin: auto;
+        padding: 10px;
+        position: relative;
+
+        .spinner {
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+}
+
 .workbench {
     display: flex;
 }
@@ -14,7 +33,7 @@
         }
 
         &.active {
-            background-color: aliceblue;
+            background-color: darkgoldenrod;
         }
     }
 }

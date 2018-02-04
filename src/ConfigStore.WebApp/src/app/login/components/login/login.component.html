@@ -4,8 +4,8 @@
   </mat-form-field>
 </div>
 
-<div>
-  <mat-spinner *ngIf='loading' [diameter]='25'></mat-spinner>
+<div *ngIf='loading'>
+  <mat-spinner [diameter]='25'></mat-spinner>
 </div>
 
 <div>

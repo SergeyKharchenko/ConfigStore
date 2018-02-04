@@ -16,18 +16,39 @@ export class WorkbenchComponent implements OnInit {
   application: Application;
   activeEnv: Environment;
   activeConfigs: Config[];
+  loading: boolean;
 
   constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private _router: Router) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.application = this._storageService.load();
     if (!this.application) {
       this._router.navigateByUrl('');
+      return;
     }
+    await this.selectFirstEnv();
+  }
+
+  private async selectFirstEnv() {
+    const serv = this.application.services && this.application.services[0];
+    if (!serv) {
+      return;
+    }
+    const env = serv.environments && serv.environments[0];
+    if (!env) {
+      return;
+    }
+    await this.loadConfigs(serv, env);
   }
 
   async onEnvClicked(serv: Service, env: Environment) {
-    this.activeConfigs = await this._workbenchService.getConfigs(this.application.applicationKey, serv.serviceKey, env.environmentKey);
+    await this.loadConfigs(serv, env);
+  }
+
+  async loadConfigs(serv: Service, env: Environment) {
+    this.loading = true;
     this.activeEnv = env;
+    this.activeConfigs = await this._workbenchService.getConfigs(this.application.applicationKey, serv.serviceKey, env.environmentKey);
+    this.loading = false;
   }
 }

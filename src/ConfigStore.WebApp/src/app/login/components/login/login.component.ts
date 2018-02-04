@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   applicationKey: string;
+  loading: boolean;
 
   constructor(private _loginService: LoginService, private _storageService: StorageService, private _router: Router) { 
   }
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
     if (!this.applicationKey) {
       return;
     }
+    this.loading = true;
     const application = await this._loginService.login(this.applicationKey);
     this._storageService.save(application);
     this._router.navigateByUrl('/workbench');
