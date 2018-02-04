@@ -1,37 +1,27 @@
 import { Injectable } from '@angular/core';
 
-import { Http, Response } from '@angular/http';
+import { Http } from '@angular/http';
 import { Application } from '../models/application';
+import { HttpServiceBase } from './httpServiceBase';
 
 @Injectable()
-export class LoginService {
-  private baseUrl: string = 'https://configstorage-api.azurewebsites.net/api/Application';
-
-  constructor(private _http: Http) { }
+export class LoginService extends HttpServiceBase {
+  constructor(http: Http) {
+    super(http);
+  } 
 
   async isRegistered(name: string): Promise<boolean> {
-    const result =  await this.request<{canRegisterApplication: boolean}>('canRegister', { name });
+    const result = await this.request<{ canRegisterApplication: boolean }>('application/canRegister', { name });
     return result.canRegisterApplication;
   }
 
   async register(name: string): Promise<string> {
-    const result =  await this.request<{applicationKey: string}>('register', { name });
+    const result = await this.request<{ applicationKey: string }>('application/register', { name });
     return result.applicationKey;
   }
 
   async login(key: string): Promise<Application> {
-    const result =  await this.request<Application>('login', { key });
+    const result = await this.request<Application>('application/login', { key });
     return result;
-  }
-
-  private async request<T>(url: string, data: any): Promise<T> {
-    try {
-      const response = await this._http.post(`${this.baseUrl}/${url}`, data).toPromise();
-      return <T>response.json();
-    } catch (e) {
-      const errorResponse = <Response>e;
-      console.log(errorResponse.json());
-      throw e;
-    }
   }
 }

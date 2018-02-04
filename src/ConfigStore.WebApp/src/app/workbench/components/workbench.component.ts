@@ -3,6 +3,9 @@ import { StorageService } from '../../infrastructure/services/storage.service';
 import { Application } from '../../infrastructure/models/application';
 import { Router } from '@angular/router';
 import { Environment } from '../../infrastructure/models/environment';
+import { WorkbenchService } from '../../infrastructure/services/workbench.service';
+import { Service } from '../../infrastructure/models/service';
+import { Config } from '../../infrastructure/models/config';
 
 @Component({
   selector: 'app-workbench',
@@ -12,8 +15,9 @@ import { Environment } from '../../infrastructure/models/environment';
 export class WorkbenchComponent implements OnInit {
   application: Application;
   activeEnv: Environment;
+  activeConfigs: Config[];
 
-  constructor(private _storageService: StorageService, private _router: Router) { }
+  constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private _router: Router) { }
 
   ngOnInit() {
     this.application = this._storageService.load();
@@ -22,8 +26,8 @@ export class WorkbenchComponent implements OnInit {
     }
   }
 
-  async onEnvClicked(env: Environment) {
+  async onEnvClicked(serv: Service, env: Environment) {
+    this.activeConfigs = await this._workbenchService.getConfigs(this.application.applicationKey, serv.serviceKey, env.environmentKey);
     this.activeEnv = env;
   }
-
 }

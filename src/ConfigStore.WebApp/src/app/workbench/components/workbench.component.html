@@ -2,13 +2,15 @@
   {{application.applicationName}}
 </h3>
 
+
+
 <div class="workbench">
   <div class="navigation">
     <ul *ngIf='application.services && application.services.length'>
       <li *ngFor='let service of application.services'>
         {{ service.serviceName }}
         <ul *ngIf='service.environments && service.environments.length'>
-          <li *ngFor='let environment of service.environments' class="env" [class.active]='environment === activeEnv' (click)='onEnvClicked(environment)'>
+          <li *ngFor='let environment of service.environments' class="env" [class.active]='environment === activeEnv' (click)='onEnvClicked(service, environment)'>
             {{ environment.environmentName }}
           </li>
         </ul>
@@ -18,13 +20,10 @@
 
   <div class="configs-wrapper">
     <div *ngIf='activeEnv' class="configs">
-        <div *ngFor='let config of activeEnv.configs'>{{config}}</div>
+        <div *ngFor='let config of activeConfigs'>
+          <span><b>{{config.name}}</b></span> - <span>{{config.value}}</span>
+        </div>
     </div>
   </div>
 
 </div>
-
-<!-- <pre>
-  {{text}}
-</pre> -->
-
