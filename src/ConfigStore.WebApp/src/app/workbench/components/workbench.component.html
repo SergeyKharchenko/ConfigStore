@@ -1,3 +1,30 @@
-<p>
-  workbench works!
-</p>
+<h3>
+  {{application.applicationName}}
+</h3>
+
+<div class="workbench">
+  <div class="navigation">
+    <ul *ngIf='application.services && application.services.length'>
+      <li *ngFor='let service of application.services'>
+        {{ service.serviceName }}
+        <ul *ngIf='service.environments && service.environments.length'>
+          <li *ngFor='let environment of service.environments' class="env" [class.active]='environment === activeEnv' (click)='onEnvClicked(environment)'>
+            {{ environment.environmentName }}
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="configs-wrapper">
+    <div *ngIf='activeEnv' class="configs">
+        <div *ngFor='let config of activeEnv.configs'>{{config}}</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- <pre>
+  {{text}}
+</pre> -->
+

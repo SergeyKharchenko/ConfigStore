@@ -1,0 +1,26 @@
+.workbench {
+    display: flex;
+}
+
+.navigation {
+    background-color: antiquewhite;
+    padding: 10pt;
+
+    .env {
+        cursor: pointer;
+
+        &:hover {
+            background-color: aliceblue;
+        }
+
+        &.active {
+            background-color: aliceblue;
+        }
+    }
+}
+
+.configs-wrapper {
+    background-color: azure;
+    width: 100%;
+    padding: 10pt;
+}
