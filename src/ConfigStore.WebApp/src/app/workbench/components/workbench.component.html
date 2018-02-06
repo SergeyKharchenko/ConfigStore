@@ -35,7 +35,7 @@
               
               <ng-template #config_name_editor>
                 <mat-form-field>
-                  <input matInput autofocus [value]='config.name' select (focusout)='onConfigEditorFocusOut()' />
+                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' select (focusout)='onConfigEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
 
@@ -55,7 +55,7 @@
 
               <ng-template #config_value_editor>
                   <mat-form-field>
-                    <input matInput autofocus [value]='config.value' select (focusout)='onConfigEditorFocusOut()' />
+                    <input matInput autofocus [value]='config.value' [(ngModel)]='config.value' select (focusout)='onConfigEditorFocusOut()' />
                   </mat-form-field>
                 </ng-template>
   

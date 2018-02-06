@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { WorkbenchRoutingModule } from './workbench-routing.module';
 import { WorkbenchComponent } from './components/workbench.component';
@@ -11,7 +12,11 @@ import { SelectInputDirective } from './directives/select-input.directive';
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule, 
+    ReactiveFormsModule,
+
     WorkbenchRoutingModule,
+    
     MatProgressSpinnerModule,
     MatTableModule,
     MatInputModule
