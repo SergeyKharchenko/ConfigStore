@@ -62,7 +62,12 @@ export class WorkbenchComponent implements OnInit {
     this.activeConfigInputType = 'name';
   }
 
-  onConfigEditorfocusOut() {
+  onConfigValueClick(config) {
+    this.activeConfig = config;
+    this.activeConfigInputType = 'value';
+  }
+
+  onConfigEditorFocusOut() {
     this.activeConfig = null;
   }
 }

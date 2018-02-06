@@ -29,24 +29,43 @@
   
           <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-            <mat-cell *matCellDef="let config" (dblclick)='onConfigNameClick(config)'>
+            <mat-cell *matCellDef="let config">
 
               <div *ngIf="activeConfig === config && activeConfigInputType === 'name';then config_name_editor else config_name"></div>
               
               <ng-template #config_name_editor>
                 <mat-form-field>
-                  <input matInput autofocus [value]='config.name' select (focusout)='onConfigEditorfocusOut()' />
+                  <input matInput autofocus [value]='config.name' select (focusout)='onConfigEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
 
-              <ng-template #config_name>{{config.name}}</ng-template>
+              <ng-template #config_name>
+                <div (dblclick)='onConfigNameClick(config)'>
+                    {{config.name}}
+                </div>
+              </ng-template>
 
             </mat-cell>
           </ng-container>
   
           <ng-container matColumnDef="value">
             <mat-header-cell *matHeaderCellDef> Value </mat-header-cell>
-            <mat-cell *matCellDef="let config"> {{config.value}} </mat-cell>
+            <mat-cell *matCellDef="let config"> 
+              <div *ngIf="activeConfig === config && activeConfigInputType === 'value';then config_value_editor else config_value"></div>
+
+              <ng-template #config_value_editor>
+                  <mat-form-field>
+                    <input matInput autofocus [value]='config.value' select (focusout)='onConfigEditorFocusOut()' />
+                  </mat-form-field>
+                </ng-template>
+  
+                <ng-template #config_value>
+                    <div (dblclick)='onConfigValueClick(config)'>
+                        {{config.value}}
+                    </div>
+                </ng-template>
+
+            </mat-cell>
           </ng-container>
   
           <mat-header-row *matHeaderRowDef="['name', 'value']"></mat-header-row>
