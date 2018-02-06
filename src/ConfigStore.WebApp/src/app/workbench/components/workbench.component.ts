@@ -6,6 +6,7 @@ import { Environment } from '../../infrastructure/models/environment';
 import { WorkbenchService } from '../../infrastructure/services/workbench.service';
 import { Service } from '../../infrastructure/models/service';
 import { Config } from '../../infrastructure/models/config';
+import { MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'app-workbench',
@@ -15,7 +16,7 @@ import { Config } from '../../infrastructure/models/config';
 export class WorkbenchComponent implements OnInit {
   application: Application;
   activeEnv: Environment;
-  activeConfigs: Config[];
+  activeConfigs: MatTableDataSource<Config>;
   loading: boolean;
 
   constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private _router: Router) { }
@@ -48,7 +49,8 @@ export class WorkbenchComponent implements OnInit {
   async loadConfigs(serv: Service, env: Environment) {
     this.loading = true;
     this.activeEnv = env;
-    this.activeConfigs = await this._workbenchService.getConfigs(this.application.applicationKey, serv.serviceKey, env.environmentKey);
+    const configs = await this._workbenchService.getConfigs(this.application.applicationKey, serv.serviceKey, env.environmentKey);
+    this.activeConfigs = new MatTableDataSource<Config>(configs);
     this.loading = false;
   }
 }

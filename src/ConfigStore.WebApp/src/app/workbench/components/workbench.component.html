@@ -24,9 +24,35 @@
 
   <div class="configs-wrapper">
     <div *ngIf='activeEnv' class="configs">
-        <div *ngFor='let config of activeConfigs'>
+        <!-- <div *ngFor='let config of activeConfigs'>
           <span><b>{{config.name}}</b></span> - <span>{{config.value}}</span>
+        </div> -->
+
+        <div class="example-container mat-elevation-z8">
+          <mat-table #table [dataSource]="activeConfigs">
+        
+            <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->
+        
+        
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="value">
+              <mat-header-cell *matHeaderCellDef> Value </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.value}} </mat-cell>
+            </ng-container>
+        
+            <mat-header-row *matHeaderRowDef="['name', 'value']"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: ['name', 'value'];"></mat-row>
+          </mat-table>
         </div>
+        
+
     </div>
   </div>
 

@@ -42,4 +42,11 @@
     background-color: azure;
     width: 100%;
     padding: 10pt;
+
+    mat-cell {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0 5px;
+    }
 }

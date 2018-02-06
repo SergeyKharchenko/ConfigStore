@@ -5,13 +5,14 @@ import { WorkbenchRoutingModule } from './workbench-routing.module';
 import { WorkbenchComponent } from './components/workbench.component';
 import { StorageService } from '../infrastructure/services/storage.service';
 import { WorkbenchService } from '../infrastructure/services/workbench.service';
-import { MatProgressSpinnerModule } from '@angular/material';
+import { MatProgressSpinnerModule, MatTableModule } from '@angular/material';
 
 @NgModule({
   imports: [
     CommonModule,
     WorkbenchRoutingModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTableModule
   ],
   declarations: [WorkbenchComponent],
   providers: [StorageService, WorkbenchService]
