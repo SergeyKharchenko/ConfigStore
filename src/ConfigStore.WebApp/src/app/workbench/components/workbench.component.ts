@@ -7,6 +7,7 @@ import { WorkbenchService } from '../../infrastructure/services/workbench.servic
 import { Service } from '../../infrastructure/models/service';
 import { Config } from '../../infrastructure/models/config';
 import { MatTableDataSource } from '@angular/material';
+import { concat } from 'rxjs/observable/concat';
 
 @Component({
   selector: 'app-workbench',
@@ -18,6 +19,8 @@ export class WorkbenchComponent implements OnInit {
   activeEnv: Environment;
   activeConfigs: MatTableDataSource<Config>;
   loading: boolean;
+  activeConfig: Config;
+  activeConfigInputType: string;
 
   constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private _router: Router) { }
 
@@ -52,5 +55,14 @@ export class WorkbenchComponent implements OnInit {
     const configs = await this._workbenchService.getConfigs(this.application.applicationKey, serv.serviceKey, env.environmentKey);
     this.activeConfigs = new MatTableDataSource<Config>(configs);
     this.loading = false;
+  }
+
+  onConfigNameClick(config) {
+    this.activeConfig = config;
+    this.activeConfigInputType = 'name';
+  }
+
+  onConfigEditorfocusOut() {
+    this.activeConfig = null;
   }
 }
