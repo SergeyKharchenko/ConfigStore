@@ -40,7 +40,7 @@
               </ng-template>
 
               <ng-template #config_name>
-                <div (dblclick)='onConfigNameClick(config)'>
+                <div class="config-text" (dblclick)='onConfigNameClick(config)'>
                     {{config.name}}
                 </div>
               </ng-template>
@@ -60,7 +60,7 @@
                 </ng-template>
   
                 <ng-template #config_value>
-                    <div (dblclick)='onConfigValueClick(config)'>
+                    <div class="config-text" (dblclick)='onConfigValueClick(config)'>
                         {{config.value}}
                     </div>
                 </ng-template>

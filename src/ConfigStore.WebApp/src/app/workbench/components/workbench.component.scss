@@ -44,10 +44,13 @@
     padding: 10pt;
 
     mat-cell {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
         padding: 0 5px;
+
+        .config-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
         mat-form-field {
             width: 100%;
