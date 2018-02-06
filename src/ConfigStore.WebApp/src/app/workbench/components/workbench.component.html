@@ -31,11 +31,11 @@
             <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
             <mat-cell *matCellDef="let config" (dblclick)='onConfigNameClick(config)'>
 
-              <div *ngIf="activeConfig && activeConfigInputType === 'name';then config_name_editor else config_name"></div>
+              <div *ngIf="activeConfig === config && activeConfigInputType === 'name';then config_name_editor else config_name"></div>
               
               <ng-template #config_name_editor>
                 <mat-form-field>
-                  <input matInput autofocus [value]='config.name' (focusout)='onConfigEditorfocusOut()' />
+                  <input matInput autofocus [value]='config.name' select (focusout)='onConfigEditorfocusOut()' />
                 </mat-form-field>
               </ng-template>
 
