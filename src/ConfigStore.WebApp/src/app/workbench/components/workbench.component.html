@@ -24,7 +24,7 @@
 
   <div class="configs-wrapper">
     <div *ngIf='activeConfigs' class="configs">
-      <div class="example-container mat-elevation-z8">
+      <div class="mat-elevation-z8">
         <mat-table #table [dataSource]="activeConfigs">
   
           <ng-container matColumnDef="name">
@@ -35,7 +35,7 @@
               
               <ng-template #config_name_editor>
                 <mat-form-field>
-                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' select (focusout)='onConfigEditorFocusOut()' />
+                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigNameChanged()' select (focusout)='onConfigEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
 

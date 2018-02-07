@@ -70,4 +70,8 @@ export class WorkbenchComponent implements OnInit {
   onConfigEditorFocusOut() {
     this.activeConfig = null;
   }
+
+  onConfigNameChanged() {
+    debugger;  
+  }
 }

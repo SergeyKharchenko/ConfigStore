@@ -23,7 +23,7 @@
 
 .navigation {
     background-color: antiquewhite;
-    padding: 10pt;
+    padding: 10px;
 
     .env {
         cursor: pointer;
@@ -40,20 +40,25 @@
 
 .configs-wrapper {
     background-color: azure;
-    width: 100%;
-    padding: 10pt;
+    flex-grow: 1;
+    min-width: 0;  
+    padding: 10px;
 
-    mat-cell {
-        padding: 0 5px;
+    mat-row {
+        height: 48px;
 
-        .config-text {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        mat-form-field {
-            width: 100%;
+        mat-cell {
+            padding: 0 5px;
+    
+            .config-text {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+    
+            mat-form-field {
+                width: 100%;
+            }
         }
     }
 }
