@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { StorageService } from '../../infrastructure/services/storage.service';
 import { Application } from '../../infrastructure/models/application';
 import { Router } from '@angular/router';
@@ -12,7 +12,8 @@ import { concat } from 'rxjs/observable/concat';
 @Component({
   selector: 'app-workbench',
   templateUrl: './workbench.component.html',
-  styleUrls: ['./workbench.component.scss']
+  styleUrls: ['./workbench.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WorkbenchComponent implements OnInit {
   application: Application;
@@ -68,7 +69,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   onConfigEditorFocusOut() {
-    this.activeConfig = null;
+    // this.activeConfig = null;
   }
 
   onConfigNameChanged() {

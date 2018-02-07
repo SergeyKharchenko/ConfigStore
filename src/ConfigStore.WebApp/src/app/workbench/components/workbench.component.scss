@@ -58,6 +58,10 @@
     
             mat-form-field {
                 width: 100%;
+
+                .mat-form-field-infix {
+                    border-top-width: 1.1rem;
+                }
             }
         }
     }

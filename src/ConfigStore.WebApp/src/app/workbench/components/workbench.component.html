@@ -34,7 +34,7 @@
               <div *ngIf="activeConfig === config && activeConfigInputType === 'name';then config_name_editor else config_name"></div>
               
               <ng-template #config_name_editor>
-                <mat-form-field>
+                <mat-form-field >
                   <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigNameChanged()' select (focusout)='onConfigEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
