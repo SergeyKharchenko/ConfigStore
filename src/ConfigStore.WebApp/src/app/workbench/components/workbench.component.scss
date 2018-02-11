@@ -25,15 +25,33 @@
     background-color: antiquewhite;
     padding: 10px;
 
+    .mat-list-item.mat-2-line.service {
+        height: 140px;
+
+        .service-icon {
+            align-self: start;
+        }
+
+        .service-name {
+            padding-top: 18px;
+        }
+    }
+
     .env {
         cursor: pointer;
 
-        &:hover {
-            background-color: aliceblue;
+        .mat-list-item-content {
+            padding: 0 !important;
         }
 
-        &.active {
-            background-color: darkgoldenrod;
+        &:hover .env-name {
+            font-style: italic;
+            text-shadow: 0 0 0.65px #1cd2ef, 0 0 0.65px #34c4f0;
+        }
+
+        &.active .env-name {
+            font-style: italic;
+            text-shadow: 0 0 .65px #333, 0 0 .65px #333;
         }
     }
 }

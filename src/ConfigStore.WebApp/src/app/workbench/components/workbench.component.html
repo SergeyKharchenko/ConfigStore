@@ -10,16 +10,22 @@
 
 <div class="workbench">
   <div class="navigation">
-    <ul *ngIf='application.services && application.services.length'>
-      <li *ngFor='let service of application.services'>
-        {{ service.serviceName }}
-        <ul *ngIf='service.environments && service.environments.length'>
-          <li *ngFor='let environment of service.environments' class="env" [class.active]='environment === activeEnv' (click)='onEnvClicked(service, environment)'>
-            {{ environment.environmentName }}
-          </li>
-        </ul>
-      </li>
-    </ul>
+
+      <mat-list>
+          <h3 mat-subheader>Services</h3>
+          <mat-list-item *ngFor="let service of application.services" class="service">
+            <mat-icon mat-list-icon class="service-icon">dvr</mat-icon>
+            <h4 mat-line class="service-name">{{service.serviceName}}</h4>
+
+               <mat-list mat-line dense *ngIf='service.environments && service.environments.length'>
+                <mat-list-item *ngFor="let environment of service.environments" class="env" [class.active]='environment === activeEnv' (click)='onEnvClicked(service, environment)'>
+                  <mat-icon mat-list-icon>settings</mat-icon>
+                  <h4 mat-line class="env-name">{{environment.environmentName}}</h4>
+                </mat-list-item>
+              </mat-list>
+            
+          </mat-list-item>
+        </mat-list>
   </div>
 
   <div class="configs-wrapper">

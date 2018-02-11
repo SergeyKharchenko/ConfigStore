@@ -6,7 +6,7 @@ import { WorkbenchRoutingModule } from './workbench-routing.module';
 import { WorkbenchComponent } from './components/workbench.component';
 import { StorageService } from '../infrastructure/services/storage.service';
 import { WorkbenchService } from '../infrastructure/services/workbench.service';
-import { MatProgressSpinnerModule, MatTableModule, MatInputModule } from '@angular/material';
+import { MatProgressSpinnerModule, MatTableModule, MatInputModule, MatListModule, MatIconModule } from '@angular/material';
 import { SelectInputDirective } from './directives/select-input.directive';
 
 @NgModule({
@@ -19,7 +19,9 @@ import { SelectInputDirective } from './directives/select-input.directive';
     
     MatProgressSpinnerModule,
     MatTableModule,
-    MatInputModule
+    MatInputModule,
+    MatListModule, 
+    MatIconModule
   ],
   declarations: [WorkbenchComponent, SelectInputDirective],
   providers: [StorageService, WorkbenchService]
