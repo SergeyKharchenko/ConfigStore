@@ -17,11 +17,13 @@ import { concat } from 'rxjs/observable/concat';
 })
 export class WorkbenchComponent implements OnInit {
   application: Application;
+  activeServ: Service;
   activeEnv: Environment;
   activeConfigs: MatTableDataSource<Config>;
   loading: boolean;
   editedElement: any;
   activeConfigInputType: string;
+  oldConfigName: string;
 
   constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, route: ActivatedRoute) { 
     this.application = route.snapshot.data.application;
@@ -60,9 +62,15 @@ export class WorkbenchComponent implements OnInit {
     this.editedElement = env;
   }
 
+  async onEnvNameChanged(serv: Service, env: Environment) {
+    await this._workbenchService.renameEnvironment(this.application.applicationKey, serv.serviceKey, env.environmentKey, env.environmentName);
+  }
+  
   async loadConfigs(serv: Service, env: Environment) {
-    this.loading = true;
+    this.activeServ = serv;
     this.activeEnv = env;
+    
+    this.loading = true;
     const configs = await this._workbenchService.getConfigs(this.application.applicationKey, serv.serviceKey, env.environmentKey);
     this.activeConfigs = new MatTableDataSource<Config>(configs);
     this.loading = false;
@@ -78,11 +86,19 @@ export class WorkbenchComponent implements OnInit {
     this.activeConfigInputType = 'value';
   }
 
+  onConfigNameFocusIn(config: Config) {
+    this.oldConfigName = config.name;
+  }
+
   onEditorFocusOut() {
     this.editedElement = null;
   }
 
-  onConfigNameChanged() {
-    debugger;  
+  async onConfigNameChanged(config: Config) {
+    await this._workbenchService.renameConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, this.oldConfigName, config);  
+  }
+
+  async onConfigValueChanged(config: Config) {
+    await this._workbenchService.addOrUpdateConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, config);
   }
 }

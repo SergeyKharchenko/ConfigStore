@@ -39,7 +39,7 @@
             <ng-template #env_name_editor>
               <mat-form-field>
                 <input matInput autofocus [value]='env.environmentName' [(ngModel)]='env.environmentName' [ngModelOptions]="{updateOn: 'blur'}"
-                  (ngModelChange)='onEnvNameChanged()' select (focusout)='onEditorFocusOut()' />
+                  (ngModelChange)='onEnvNameChanged(service, env)' select (focusout)='onEditorFocusOut()' />
               </mat-form-field>
             </ng-template>
 
@@ -69,7 +69,8 @@
 
               <ng-template #config_name_editor>
                 <mat-form-field>
-                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigNameChanged()'
+                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" 
+                    (focus)="onConfigNameFocusIn(config)" (ngModelChange)='onConfigNameChanged(config)'
                     select (focusout)='onEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
@@ -90,7 +91,8 @@
 
               <ng-template #config_value_editor>
                 <mat-form-field>
-                  <input matInput autofocus [value]='config.value' [(ngModel)]='config.value' select (focusout)='onEditorFocusOut()' />
+                  <input matInput autofocus [value]='config.value' [(ngModel)]='config.value'  [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigValueChanged(config)'
+                    select (focusout)='onEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
 

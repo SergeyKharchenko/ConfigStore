@@ -18,10 +18,26 @@ export class WorkbenchService extends HttpServiceBase {
 
   async renameService(appKey: string, servKey: string, name: string): Promise<void> {
     const headers = this.buildHeaders(appKey);
-    await this.requestVoid('service/rename', {key: servKey, name }, headers);
+    await this.requestVoid('service/rename', { key: servKey, name }, headers);
   }
 
-  private buildHeaders(appKey?: string, servKey?: string, envKey?: string) : { [name: string]: any } {
+  async renameEnvironment(appKey: string, servKey: string, envKey: string, name: string): Promise<void> {
+    const headers = this.buildHeaders(appKey, servKey);
+    await this.requestVoid('environment/rename', { key: envKey, name }, headers);
+  }
+
+  async addOrUpdateConfig(appKey: string, servKey: string, envKey: string, config: Config): Promise<void> {
+    const headers = this.buildHeaders(appKey, servKey, envKey);
+    await this.requestVoid('config/addOrUpdate', { configName: config.name, configValue: config.value }, headers);
+  }
+
+  async renameConfig(appKey: string, servKey: string, envKey: string, oldName: string, config: Config): Promise<void> {
+    const headers = this.buildHeaders(appKey, servKey, envKey);
+    await this.requestVoid('config/remove', { name: oldName }, headers);
+    await this.requestVoid('config/addOrUpdate', { configName: config.name, configValue: config.value }, headers);
+  }
+
+  private buildHeaders(appKey?: string, servKey?: string, envKey?: string): { [name: string]: any } {
     const headers = {};
     if (appKey) {
       headers['CS-Application-Key'] = appKey;
