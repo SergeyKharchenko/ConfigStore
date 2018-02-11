@@ -46,19 +46,19 @@ export class WorkbenchComponent implements OnInit {
     await this.loadConfigs(serv, env);
   }
 
-  onServiceDblclicked(service) {
+  onServiceDblclicked(service: Service) {
     this.editedElement = service;
   }
 
-  onServiceNameChanged() {
-
+  async onServiceNameChanged(service: Service) {
+    await this._workbenchService.renameService(this.application.applicationKey, service.serviceKey, service.serviceName);
   }
 
   async onEnvClicked(serv: Service, env: Environment) {
     await this.loadConfigs(serv, env);
   }
 
-  onEnvDblclicked(e, env) {
+  onEnvDblclicked(e, env: Environment) {
     e.stopPropagation();
     this.editedElement = env;
   }
@@ -71,12 +71,12 @@ export class WorkbenchComponent implements OnInit {
     this.loading = false;
   }
 
-  onConfigNameDblclick(config) {
+  onConfigNameDblclick(config: Config) {
     this.editedElement = config;
     this.activeConfigInputType = 'name';
   }
 
-  onConfigValueDblclick(config) {
+  onConfigValueDblclick(config: Config) {
     this.editedElement = config;
     this.activeConfigInputType = 'value';
   }

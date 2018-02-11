@@ -19,4 +19,18 @@ export class HttpServiceBase {
       throw e;
     }
   }
+
+  protected async requestVoid(url: string, data: any, headers?: { [name: string]: any }): Promise<void> {
+    try {
+      const options: RequestOptionsArgs = {};
+      if (headers) {
+        options.headers = new Headers(headers);
+      }
+      await this._http.post(`${this.baseUrl}/${url}`, data, options).toPromise();
+    } catch (e) {
+      const errorResponse = <Response>e;
+      console.log(errorResponse.json());
+      throw e;
+    }
+  }
 }

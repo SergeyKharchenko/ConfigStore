@@ -16,11 +16,22 @@ export class WorkbenchService extends HttpServiceBase {
     return result;
   }
 
-  private buildHeaders(appKey: string, servKey: string, envKey: string) : { [name: string]: any } {
-    return {
-        'CS-Application-Key': appKey,
-        'CS-Service-Key': servKey,
-        'CS-Environment-Key': envKey
-      };
+  async renameService(appKey: string, servKey: string, name: string): Promise<void> {
+    const headers = this.buildHeaders(appKey);
+    await this.requestVoid('service/rename', {key: servKey, name }, headers);
+  }
+
+  private buildHeaders(appKey?: string, servKey?: string, envKey?: string) : { [name: string]: any } {
+    const headers = {};
+    if (appKey) {
+      headers['CS-Application-Key'] = appKey;
+    }
+    if (servKey) {
+      headers['CS-Service-Key'] = servKey;
+    }
+    if (envKey) {
+      headers['CS-Environment-Key'] = envKey;
+    }
+    return headers;
   }
 }

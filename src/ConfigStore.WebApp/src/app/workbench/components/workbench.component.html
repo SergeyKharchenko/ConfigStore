@@ -20,7 +20,7 @@
         <ng-template #service_name_editor>
           <mat-form-field>
             <input matInput autofocus [value]='service.serviceName' [(ngModel)]='service.serviceName' [ngModelOptions]="{updateOn: 'blur'}"
-              (ngModelChange)='onServiceNameChanged()' select (focusout)='onEditorFocusOut()' />
+              (ngModelChange)='onServiceNameChanged(service)' select (focusout)='onEditorFocusOut()' />
           </mat-form-field>
         </ng-template>
 
