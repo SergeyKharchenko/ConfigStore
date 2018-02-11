@@ -20,7 +20,7 @@ export class WorkbenchComponent implements OnInit {
   activeEnv: Environment;
   activeConfigs: MatTableDataSource<Config>;
   loading: boolean;
-  activeConfig: Config;
+  editedElement: any;
   activeConfigInputType: string;
 
   constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private _router: Router) { }
@@ -46,8 +46,21 @@ export class WorkbenchComponent implements OnInit {
     await this.loadConfigs(serv, env);
   }
 
+  onServiceDblclicked(service) {
+    this.editedElement = service;
+  }
+
+  onServiceNameChanged() {
+
+  }
+
   async onEnvClicked(serv: Service, env: Environment) {
     await this.loadConfigs(serv, env);
+  }
+
+  onEnvDblclicked(e, env) {
+    e.stopPropagation();
+    this.editedElement = env;
   }
 
   async loadConfigs(serv: Service, env: Environment) {
@@ -58,18 +71,18 @@ export class WorkbenchComponent implements OnInit {
     this.loading = false;
   }
 
-  onConfigNameClick(config) {
-    this.activeConfig = config;
+  onConfigNameDblclick(config) {
+    this.editedElement = config;
     this.activeConfigInputType = 'name';
   }
 
-  onConfigValueClick(config) {
-    this.activeConfig = config;
+  onConfigValueDblclick(config) {
+    this.editedElement = config;
     this.activeConfigInputType = 'value';
   }
 
-  onConfigEditorFocusOut() {
-    // this.activeConfig = null;
+  onEditorFocusOut() {
+    this.editedElement = null;
   }
 
   onConfigNameChanged() {

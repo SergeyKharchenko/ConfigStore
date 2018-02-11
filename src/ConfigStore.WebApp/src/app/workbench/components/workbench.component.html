@@ -3,83 +3,112 @@
     {{application.applicationName}}
 
     <span *ngIf='loading' class="spinner">
-        <mat-spinner [diameter]='25'></mat-spinner>
-      </span>
+      <mat-spinner [diameter]='25'></mat-spinner>
+    </span>
   </h3>
 </div>
 
 <div class="workbench">
   <div class="navigation">
 
-      <mat-list>
-          <h3 mat-subheader>Services</h3>
-          <mat-list-item *ngFor="let service of application.services" class="service">
-            <mat-icon mat-list-icon class="service-icon">dvr</mat-icon>
-            <h4 mat-line class="service-name">{{service.serviceName}}</h4>
+    <mat-list>
+      <h3 mat-subheader>Services</h3>
+      <mat-list-item *ngFor="let service of application.services" class="service" (dblclick)='onServiceDblclicked(service)'>
+        <mat-icon mat-list-icon class="service-icon">dvr</mat-icon>
+        <div mat-line *ngIf="service === editedElement;then service_name_editor else service_name"></div>
 
-               <mat-list mat-line dense *ngIf='service.environments && service.environments.length'>
-                <mat-list-item *ngFor="let environment of service.environments" class="env" [class.active]='environment === activeEnv' (click)='onEnvClicked(service, environment)'>
-                  <mat-icon mat-list-icon>settings</mat-icon>
-                  <h4 mat-line class="env-name">{{environment.environmentName}}</h4>
-                </mat-list-item>
-              </mat-list>
-            
+        <ng-template #service_name_editor>
+          <mat-form-field>
+            <input matInput autofocus [value]='service.serviceName' [(ngModel)]='service.serviceName' [ngModelOptions]="{updateOn: 'blur'}"
+              (ngModelChange)='onServiceNameChanged()' select (focusout)='onEditorFocusOut()' />
+          </mat-form-field>
+        </ng-template>
+
+        <ng-template #service_name>
+          <h4 class="service-name">
+            {{service.serviceName}}
+          </h4>
+        </ng-template>
+
+        <mat-list mat-line dense *ngIf='service.environments && service.environments.length' class="envs">
+          <mat-list-item *ngFor="let env of service.environments" class="env" [class.active]='env === activeEnv' (click)='onEnvClicked(service, env)'
+            (dblclick)='onEnvDblclicked($event, env)'>
+            <mat-icon mat-list-icon>settings</mat-icon>
+            <div mat-line *ngIf="env === editedElement;then env_name_editor else env_name"></div>
+
+            <ng-template #env_name_editor>
+              <mat-form-field>
+                <input matInput autofocus [value]='env.environmentName' [(ngModel)]='env.environmentName' [ngModelOptions]="{updateOn: 'blur'}"
+                  (ngModelChange)='onEnvNameChanged()' select (focusout)='onEditorFocusOut()' />
+              </mat-form-field>
+            </ng-template>
+
+            <ng-template #env_name>
+              <h4 class="env-name">
+                {{env.environmentName}}
+              </h4>
+            </ng-template>
+
           </mat-list-item>
         </mat-list>
+
+      </mat-list-item>
+    </mat-list>
   </div>
 
   <div class="configs-wrapper">
     <div *ngIf='activeConfigs' class="configs">
       <div class="mat-elevation-z8">
         <mat-table #table [dataSource]="activeConfigs">
-  
+
           <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
             <mat-cell *matCellDef="let config">
 
-              <div *ngIf="activeConfig === config && activeConfigInputType === 'name';then config_name_editor else config_name"></div>
-              
+              <div *ngIf="editedElement === config && activeConfigInputType === 'name';then config_name_editor else config_name"></div>
+
               <ng-template #config_name_editor>
-                <mat-form-field >
-                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigNameChanged()' select (focusout)='onConfigEditorFocusOut()' />
+                <mat-form-field>
+                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigNameChanged()'
+                    select (focusout)='onEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
 
               <ng-template #config_name>
-                <div class="config-text" (dblclick)='onConfigNameClick(config)'>
-                    {{config.name}}
+                <div class="config-text" (dblclick)='onConfigNameDblclick(config)'>
+                  {{config.name}}
                 </div>
               </ng-template>
 
             </mat-cell>
           </ng-container>
-  
+
           <ng-container matColumnDef="value">
             <mat-header-cell *matHeaderCellDef> Value </mat-header-cell>
-            <mat-cell *matCellDef="let config"> 
-              <div *ngIf="activeConfig === config && activeConfigInputType === 'value';then config_value_editor else config_value"></div>
+            <mat-cell *matCellDef="let config">
+              <div *ngIf="editedElement === config && activeConfigInputType === 'value';then config_value_editor else config_value"></div>
 
               <ng-template #config_value_editor>
-                  <mat-form-field>
-                    <input matInput autofocus [value]='config.value' [(ngModel)]='config.value' select (focusout)='onConfigEditorFocusOut()' />
-                  </mat-form-field>
-                </ng-template>
-  
-                <ng-template #config_value>
-                    <div class="config-text" (dblclick)='onConfigValueClick(config)'>
-                        {{config.value}}
-                    </div>
-                </ng-template>
+                <mat-form-field>
+                  <input matInput autofocus [value]='config.value' [(ngModel)]='config.value' select (focusout)='onEditorFocusOut()' />
+                </mat-form-field>
+              </ng-template>
+
+              <ng-template #config_value>
+                <div class="config-text" (dblclick)='onConfigValueDblclick(config)'>
+                  {{config.value}}
+                </div>
+              </ng-template>
 
             </mat-cell>
           </ng-container>
-  
+
           <mat-header-row *matHeaderRowDef="['name', 'value']"></mat-header-row>
           <mat-row *matRowDef="let row; columns: ['name', 'value'];"></mat-row>
         </mat-table>
       </div>
-  
+
     </div>
   </div>
-  
-  </div>
+
+</div>

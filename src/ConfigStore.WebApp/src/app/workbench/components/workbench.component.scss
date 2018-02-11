@@ -19,65 +19,85 @@
 
 .workbench {
     display: flex;
-}
 
-.navigation {
-    padding: 10px;
+    .navigation {
+        width: 30%;
 
-    .mat-list-item.mat-2-line.service {
-        height: 140px;
+        .mat-list-item.service {
+            height: unset;
 
-        .service-icon {
-            align-self: start;
-        }
-
-        .service-name {
-            padding-top: 18px;
-        }
-    }
-
-    .env {
-        cursor: pointer;
-
-        .mat-list-item-content {
-            padding: 0 !important;
-        }
-
-        &:hover .env-name {
-            font-style: italic;
-            text-shadow: 0 0 0.65px #1cd2ef, 0 0 0.65px #34c4f0;
-        }
-
-        &.active .env-name {
-            font-style: italic;
-            text-shadow: 0 0 .65px #333, 0 0 .65px #333;
-        }
-    }
-}
-
-.configs-wrapper {
-    flex-grow: 1;
-    min-width: 0;  
-    padding: 10px;
-    margin-top: 50px;
-
-    mat-row {
-        height: 48px;
-
-        mat-cell {
-            padding: 0 5px;
-    
-            .config-text {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+            .service-icon {
+                align-self: start;
             }
-    
-            mat-form-field {
-                width: 100%;
+
+            .service-name {
+                padding-top: 8px;
+                cursor: default;
+            }
+
+            .mat-input-wrapper {
+                padding: 0;
 
                 .mat-form-field-infix {
-                    border-top-width: 1.1rem;
+                    border-top: none;
+                }
+
+                .mat-form-field-underline {
+                    bottom: 0;
+                }
+            }
+        }
+
+        .envs {
+            overflow: unset;
+
+            .env {
+                cursor: pointer;
+    
+                .mat-list-item-content {
+                    margin-left: -25px;
+                }
+    
+                &:hover .env-name {
+                    font-style: italic;
+                    text-shadow: 0 0 0.65px #1cd2ef, 0 0 0.65px #34c4f0;
+                }
+    
+                &.active .env-name {
+                    font-style: italic;
+                    text-shadow: 0 0 .65px #333, 0 0 .65px #333;
+                    cursor: default;
+                }
+            }
+
+        }
+    }
+
+    .configs-wrapper {
+        flex-grow: 1;
+        min-width: 0;  
+        padding: 10px;
+        margin-top: 50px;
+
+        mat-row {
+            height: 48px;
+            cursor: default;
+
+            mat-cell {
+                padding: 0 5px;
+        
+                .config-text {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+        
+                mat-form-field {
+                    width: 100%;
+
+                    .mat-form-field-infix {
+                        border-top-width: 1.1rem;
+                    }
                 }
             }
         }
