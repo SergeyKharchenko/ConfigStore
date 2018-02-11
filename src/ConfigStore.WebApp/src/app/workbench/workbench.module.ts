@@ -8,6 +8,7 @@ import { StorageService } from '../infrastructure/services/storage.service';
 import { WorkbenchService } from '../infrastructure/services/workbench.service';
 import { MatProgressSpinnerModule, MatTableModule, MatInputModule, MatListModule, MatIconModule } from '@angular/material';
 import { SelectInputDirective } from './directives/select-input.directive';
+import { WorkbenchGuard } from './guards/workbench.guard';
 
 @NgModule({
   imports: [
@@ -24,6 +25,6 @@ import { SelectInputDirective } from './directives/select-input.directive';
     MatIconModule
   ],
   declarations: [WorkbenchComponent, SelectInputDirective],
-  providers: [StorageService, WorkbenchService]
+  providers: [StorageService, WorkbenchService, WorkbenchGuard]
 })
 export class WorkbenchModule { }

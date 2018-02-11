@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { StorageService } from '../../infrastructure/services/storage.service';
 import { Application } from '../../infrastructure/models/application';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Environment } from '../../infrastructure/models/environment';
 import { WorkbenchService } from '../../infrastructure/services/workbench.service';
 import { Service } from '../../infrastructure/models/service';
@@ -23,15 +23,12 @@ export class WorkbenchComponent implements OnInit {
   editedElement: any;
   activeConfigInputType: string;
 
-  constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private _router: Router) { }
+  constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, route: ActivatedRoute) { 
+    this.application = route.snapshot.data.application;
+  }
 
   async ngOnInit() {
-    this.application = this._storageService.load();
-    if (!this.application) {
-      this._router.navigateByUrl('');
-      return;
-    }
-    await this.selectFirstEnv();
+    await this.selectFirstEnv();  
   }
 
   private async selectFirstEnv() {

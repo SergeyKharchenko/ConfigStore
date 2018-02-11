@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
     }
     this.loading = true;
     const application = await this._loginService.login(this.applicationKey);
-    this._storageService.save(application);
+    this._storageService.saveApplication(application);
     this._router.navigateByUrl('/workbench');
   }
 }
