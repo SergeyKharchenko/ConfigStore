@@ -22,7 +22,6 @@
 }
 
 .navigation {
-    background-color: antiquewhite;
     padding: 10px;
 
     .mat-list-item.mat-2-line.service {
@@ -57,10 +56,10 @@
 }
 
 .configs-wrapper {
-    background-color: azure;
     flex-grow: 1;
     min-width: 0;  
     padding: 10px;
+    margin-top: 50px;
 
     mat-row {
         height: 48px;
