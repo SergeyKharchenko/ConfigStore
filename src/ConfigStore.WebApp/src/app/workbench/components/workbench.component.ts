@@ -23,7 +23,6 @@ export class WorkbenchComponent implements OnInit {
   loading: boolean;
   editedElement: any;
   activeConfigInputType: string;
-  oldConfigName: string;
 
   constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, route: ActivatedRoute) { 
     this.application = route.snapshot.data.application;
@@ -86,16 +85,12 @@ export class WorkbenchComponent implements OnInit {
     this.activeConfigInputType = 'value';
   }
 
-  onConfigNameFocusIn(config: Config) {
-    this.oldConfigName = config.name;
-  }
-
   onEditorFocusOut() {
     this.editedElement = null;
   }
 
-  async onConfigNameChanged(config: Config) {
-    await this._workbenchService.renameConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, this.oldConfigName, config);  
+  async onConfigNameChanged({oldValue}, config: Config) {
+    await this._workbenchService.renameConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, oldValue, config);  
   }
 
   async onConfigValueChanged(config: Config) {
