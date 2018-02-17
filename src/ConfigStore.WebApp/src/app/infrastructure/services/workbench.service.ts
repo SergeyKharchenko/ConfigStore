@@ -37,6 +37,16 @@ export class WorkbenchService extends HttpServiceBase {
     await this.requestVoid('config/addOrUpdate', { configName: config.name, configValue: config.value }, headers);
   }
 
+  async addService(appKey: string, name: string): Promise<void> {
+    const headers = this.buildHeaders(appKey);
+    await this.requestVoid('service/add', { name }, headers);
+  }
+
+  async addEnvironment(appKey: string, servKey: string, name: string): Promise<void> {
+    const headers = this.buildHeaders(appKey, servKey);
+    await this.requestVoid('environment/add', { name }, headers);
+  }
+
   private buildHeaders(appKey?: string, servKey?: string, envKey?: string): { [name: string]: any } {
     const headers = {};
     if (appKey) {

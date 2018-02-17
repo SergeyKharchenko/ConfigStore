@@ -3,13 +3,24 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { WorkbenchRoutingModule } from './workbench-routing.module';
-import { WorkbenchComponent } from './components/workbench.component';
+import { WorkbenchComponent } from './components/workbench/workbench.component';
 import { StorageService } from '../infrastructure/services/storage.service';
 import { WorkbenchService } from '../infrastructure/services/workbench.service';
-import { MatProgressSpinnerModule, MatTableModule, MatInputModule, MatListModule, MatIconModule } from '@angular/material';
+import {
+  MatProgressSpinnerModule,
+  MatTableModule,
+  MatInputModule,
+  MatListModule,
+  MatIconModule,
+  MatButtonModule,
+  MatDialogModule,
+  MatRadioModule,
+  MatSelectModule
+} from '@angular/material';
 import { SelectInputDirective } from './directives/select-input.directive';
 import { WorkbenchGuard } from './guards/workbench.guard';
 import { NgModelExDirective } from './directives/ng-model-ex.directive';
+import { AddDialogComponent } from './components/add-dialog/add-dialog.component';
 
 @NgModule({
   imports: [
@@ -23,9 +34,14 @@ import { NgModelExDirective } from './directives/ng-model-ex.directive';
     MatTableModule,
     MatInputModule,
     MatListModule, 
-    MatIconModule
-  ],
-  declarations: [WorkbenchComponent, SelectInputDirective, NgModelExDirective],
-  providers: [StorageService, WorkbenchService, WorkbenchGuard]
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatSelectModule
+  ],  
+  declarations: [WorkbenchComponent, SelectInputDirective, NgModelExDirective, AddDialogComponent],
+  providers: [StorageService, WorkbenchService, WorkbenchGuard],
+  entryComponents: [AddDialogComponent]
 })
 export class WorkbenchModule { }

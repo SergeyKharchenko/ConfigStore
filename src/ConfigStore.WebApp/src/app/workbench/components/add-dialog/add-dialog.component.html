@@ -1,0 +1,53 @@
+<div>
+  <h1 mat-dialog-title>Adding resource</h1>
+</div>
+
+<div mat-dialog-content>
+  <div>
+    <mat-radio-group [(ngModel)]='resourceType'>
+      <mat-radio-button [value]='ResourceTypes.Service'>{{ResourceTypes.Service}}</mat-radio-button>
+      <mat-radio-button [value]='ResourceTypes.Environment'>{{ResourceTypes.Environment}}</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div class='inputs-container'>
+      <div *ngIf='resourceType === ResourceTypes.Service;then serv else env'></div>
+
+    <ng-template #serv>
+      <mat-form-field>
+        <input matInput cdkFocusInitial placeholder='Service name' [(ngModel)]='resourceName' [formControl]="nameControl">
+        <mat-error *ngIf="nameControl.hasError('required')">
+          Service name is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="nameControl.hasError('minlength')">
+          Name should not be less then <strong>2</strong> character
+        </mat-error>
+      </mat-form-field>
+    </ng-template>
+
+    <ng-template #env>
+      <mat-form-field>
+        <mat-select [(ngModel)]='selectedService'>
+          <mat-option *ngFor='let service of services' [value]='service'>
+            {{ service.serviceName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput cdkFocusInitial placeholder='Environment name' [(ngModel)]='resourceName' [formControl]="nameControl">
+        <mat-error *ngIf="nameControl.hasError('required')">
+            Environment name is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="nameControl.hasError('minlength')">
+            Name should not be less then <strong>2</strong> character
+          </mat-error>
+      </mat-form-field>
+    </ng-template>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]>Cancel</button>
+  <button mat-button  color='primary' [mat-dialog-close]='dialogResult'>Add</button>
+</div>

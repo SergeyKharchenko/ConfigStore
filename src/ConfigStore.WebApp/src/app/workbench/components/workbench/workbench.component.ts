@@ -1,19 +1,22 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { StorageService } from '../../infrastructure/services/storage.service';
-import { Application } from '../../infrastructure/models/application';
+import { StorageService } from '../../../infrastructure/services/storage.service';
+import { Application } from '../../../infrastructure/models/application';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Environment } from '../../infrastructure/models/environment';
-import { WorkbenchService } from '../../infrastructure/services/workbench.service';
-import { Service } from '../../infrastructure/models/service';
-import { Config } from '../../infrastructure/models/config';
-import { MatTableDataSource } from '@angular/material';
+import { Environment } from '../../../infrastructure/models/environment';
+import { WorkbenchService } from '../../../infrastructure/services/workbench.service';
+import { Service } from '../../../infrastructure/models/service';
+import { Config } from '../../../infrastructure/models/config';
+import { MatTableDataSource, MatDialog } from '@angular/material';
 import { concat } from 'rxjs/observable/concat';
+import { AddDialogComponent } from '../add-dialog/add-dialog.component';
+import { AddDialogResult } from '../../models/addDialogResult';
+import { ResourceTypes } from '../../enums/resourceTypes';
 
 @Component({
   selector: 'app-workbench',
   templateUrl: './workbench.component.html',
-  styleUrls: ['./workbench.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    styleUrls: ['./workbench.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WorkbenchComponent implements OnInit {
   application: Application;
@@ -24,7 +27,7 @@ export class WorkbenchComponent implements OnInit {
   editedElement: any;
   activeConfigInputType: string;
 
-  constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, route: ActivatedRoute) { 
+  constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private matDialog: MatDialog, route: ActivatedRoute) {
     this.application = route.snapshot.data.application;
   }
 
@@ -83,17 +86,49 @@ export class WorkbenchComponent implements OnInit {
   onConfigValueDblclick(config: Config) {
     this.editedElement = config;
     this.activeConfigInputType = 'value';
-  }
+  } 
 
   onEditorFocusOut() {
     this.editedElement = null;
   }
 
   async onConfigNameChanged({oldValue}, config: Config) {
+    this.loading = true;
     await this._workbenchService.renameConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, oldValue, config);  
+    this.loading = false;
   }
 
   async onConfigValueChanged(config: Config) {
+    this.loading = true;
     await this._workbenchService.addOrUpdateConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, config);
+    this.loading = false;
+  }
+
+  openAddDialog() {
+    this.matDialog.open(AddDialogComponent, {
+      width: '700px',
+      data: this.application
+    }).afterClosed().subscribe(async (result: AddDialogResult) => {
+      if (!result) {
+        return;
+      }
+      await this.addResource(result);
+    });
+  }
+
+  async addResource(result: AddDialogResult) {
+    this.loading = true;
+    switch (result.type) {
+      case ResourceTypes.Service: {
+        await this._workbenchService.addService(this.application.applicationKey, result.name);
+        break;
+      }
+      case ResourceTypes.Environment: {
+        await this._workbenchService.addEnvironment(this.application.applicationKey, result.service.serviceKey, result.name);
+        break;
+      }
+    }
+    this.application = await this._storageService.reloadApplication();
+    this.loading = false;
   }
 }

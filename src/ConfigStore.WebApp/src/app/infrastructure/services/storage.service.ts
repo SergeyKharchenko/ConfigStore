@@ -28,4 +28,12 @@ export class StorageService {
     }
     return await this._loginService.login(appKey);
   }
+
+  async reloadApplication(): Promise<Application> {
+    const appKey = this._persistenceService.get('applicationKey', StorageType.SESSION);
+    if (!appKey) {
+      return undefined;
+    }
+    return await this._loginService.login(appKey);
+  }
 } 

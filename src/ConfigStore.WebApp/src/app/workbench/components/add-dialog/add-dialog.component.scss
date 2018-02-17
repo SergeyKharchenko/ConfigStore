@@ -1,0 +1,33 @@
+mat-radio-group {
+    padding-top: 10px;
+}
+
+mat-radio-button {
+    margin: 5px;
+
+    &.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+        border-color: #3f51b5;
+    }
+
+    &.mat-radio-button.mat-accent .mat-radio-inner-circle {
+        background-color: #3f51b5
+    }
+
+    .mat-ripple-element {
+        background-color:rgba(64, 67, 255, 0.2) !important;
+    }
+}
+
+.inputs-container {
+    display: flex;
+
+    mat-form-field {
+        width: 50%;
+        padding: 10px;
+    }   
+}
+
+div.mat-dialog-content {
+    backface-visibility: unset;
+    overflow: unset;
+}
