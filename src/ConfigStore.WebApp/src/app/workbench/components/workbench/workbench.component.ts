@@ -11,6 +11,8 @@ import { concat } from 'rxjs/observable/concat';
 import { AddDialogComponent } from '../add-dialog/add-dialog.component';
 import { AddDialogResult } from '../../models/addDialogResult';
 import { ResourceTypes } from '../../enums/resourceTypes';
+import { RemoveWarningDialogComponent } from '../remove-warning-dialog/remove-warning-dialog.component';
+import { RemoveDialogArgs } from '../../models/removeDialogArgs';
 
 @Component({
   selector: 'app-workbench',
@@ -65,10 +67,15 @@ export class WorkbenchComponent implements OnInit {
   }
 
   async onEnvNameChanged(serv: Service, env: Environment) {
+    this.loading = true;
     await this._workbenchService.renameEnvironment(this.application.applicationKey, serv.serviceKey, env.environmentKey, env.environmentName);
+    this.loading = false;
   }
   
   async loadConfigs(serv: Service, env: Environment) {
+    if (this.activeEnv === env) {
+      return;
+    }
     this.activeServ = serv;
     this.activeEnv = env;
     
@@ -130,5 +137,37 @@ export class WorkbenchComponent implements OnInit {
     }
     this.application = await this._storageService.reloadApplication();
     this.loading = false;
+  }
+
+  async onDeleteServiceIconClick(serv: Service) {
+    await this.removeResource({ type: ResourceTypes.Service, service: serv });
+  }
+
+  async onDeleteEnvIconClick(serv: Service, env: Environment) {
+    await this.removeResource({ type: ResourceTypes.Environment, service: serv, environment: env });
+  }
+
+  async removeResource(data: RemoveDialogArgs) {
+    this.matDialog.open(RemoveWarningDialogComponent, {
+      width: '700px',
+      data
+    }).afterClosed().subscribe(async (result: boolean) => {
+      debugger;
+      if (!result) {
+        return;
+      }
+      this.loading = true;
+      switch (data.type) {
+        case ResourceTypes.Service: {
+          await this._workbenchService.removeService(this.application.applicationKey, data.service.serviceKey);
+          break;
+        }
+        case ResourceTypes.Environment: {
+          await this._workbenchService.removeEnvironment(this.application.applicationKey, data.service.serviceKey, data.environment.environmentKey);
+          break;
+        }
+      }
+      this.loading = false;
+    });
   }
 }

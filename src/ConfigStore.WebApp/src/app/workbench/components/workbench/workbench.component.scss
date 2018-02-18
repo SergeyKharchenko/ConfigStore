@@ -28,11 +28,26 @@
 
             .service-icon {
                 align-self: start;
+                padding: 4px;
             }
 
-            .service-name {
-                padding-top: 8px;
-                cursor: default;
+            .service-name-wrapper {
+                display: flex;
+                align-items: center;
+
+                .service-name {
+                    padding-top: 8px;
+                    margin: 0;
+                    line-height: 24px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    cursor: default;
+                }
+
+                .delete-icon {
+                    padding-top: 8px;
+                }
             }
 
             .mat-input-wrapper {
@@ -58,6 +73,18 @@
                     margin-left: -25px;
                 }
     
+                .env-name-wrapper {
+                    display: flex;
+                    align-items: center;
+
+                    .env-name {
+                        margin: 0;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+
                 &:hover .env-name {
                     font-style: italic;
                     text-shadow: 0 0 0.65px #1cd2ef, 0 0 0.65px #34c4f0;
@@ -69,12 +96,31 @@
                     cursor: default;
                 }
             }
+        }
 
+        .delete-icon {
+            display: none;
+            margin-left: auto;
+            cursor: pointer;
+
+            &:hover {
+                color: red;
+            }
+        }
+
+        .service-name-wrapper:hover .delete-icon, .env-name-wrapper:hover .delete-icon {
+            display: inline-block;
+        }
+
+        .env-name-wrapper:hover .delete-icon {
+            display: inline-block;
         }
 
         .add-button {
             min-width: 40px;
             height: 32px;
+            padding-top: 0;
+            padding-bottom: 0;   
         }
     }
 

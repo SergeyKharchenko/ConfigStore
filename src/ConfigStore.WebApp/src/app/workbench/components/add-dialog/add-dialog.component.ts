@@ -32,7 +32,7 @@ export class AddDialogComponent implements OnInit {
     };
   } 
 
-  constructor(private _dialogRef: MatDialogRef<AddDialogComponent>, @Inject(MAT_DIALOG_DATA) data: { services: Service[] }) { 
+  constructor(@Inject(MAT_DIALOG_DATA) data: { services: Service[] }) { 
     this.services = data.services;
     this.selectedService = this.services[0];
   }

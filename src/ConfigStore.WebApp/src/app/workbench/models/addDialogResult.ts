@@ -4,5 +4,5 @@ import { ResourceTypes } from "../enums/resourceTypes";
 export interface AddDialogResult {
     type: ResourceTypes;
     name: string,
-    service: Service;
+    service?: Service;
 }
