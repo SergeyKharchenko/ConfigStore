@@ -1,3 +1,41 @@
+$separator: 10px;
+
+.grid {
+    margin: 8px;
+    display: grid;
+    height: 100vh;;
+    grid: 
+        auto
+        $separator 
+        auto 
+        $separator 
+        1fr 
+            / 
+        50% repeat(1, $separator 50%);
+
+    grid-template-areas: "input . loader"
+                         ". . ."
+                         "button . ."
+                         ". . ."
+                         "link . .";
+}
+
+.input {
+    grid-area: input;
+}
+
+.loader {
+    grid-area: loader;
+}
+
+.link {
+    grid-area: link;
+}
+
+.button {
+    grid-area: button;
+}
+
 mat-form-field {
-    width: 310px;
+    width: 100%;
 }

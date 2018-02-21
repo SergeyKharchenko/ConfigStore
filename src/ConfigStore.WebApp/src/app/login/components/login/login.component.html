@@ -1,19 +1,21 @@
-<div>
-  <mat-form-field>
-    <input matInput placeholder='Application key' [(ngModel)]='applicationKey' />
-  </mat-form-field>
-</div>
+<div class="grid">
+  <div class="input">
+    <mat-form-field>
+      <input matInput placeholder='Application key' [(ngModel)]='applicationKey' />
+    </mat-form-field>
+  </div>
 
-<div *ngIf='loading'>
-  <mat-spinner [diameter]='25'></mat-spinner>
-</div>
+  <div *ngIf='loading' class="loader">
+    <mat-spinner [diameter]='25'></mat-spinner>
+  </div>
 
-<div>
-  <button mat-raised-button [disabled]='!applicationKey' color="primary" (click)='onLoginButtonClick()'>Login</button>
-</div>
+  <div class="button">
+    <button mat-raised-button [disabled]='!applicationKey' color="primary" (click)='onLoginButtonClick()'>Login</button>
+  </div>
 
-<div>
-  <a [routerLink]="['/register']">
-    To register
-  </a>
+  <div class="link">
+    <a [routerLink]="['/register']">
+      To register
+    </a>
+  </div>
 </div>
