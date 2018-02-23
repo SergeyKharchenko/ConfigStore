@@ -38,25 +38,6 @@
                 padding: 4px;
             }
 
-            .service-name-wrapper {
-                display: flex;
-                align-items: center;
-
-                .service-name {
-                    padding-top: 8px;
-                    margin: 0;
-                    line-height: 24px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    cursor: default;
-                }
-
-                .delete-icon {
-                    padding-top: 8px;
-                }
-            }
-
             .mat-input-wrapper {
                 padding: 0;
 
@@ -75,22 +56,6 @@
 
             .env {
                 cursor: pointer;
-    
-                .mat-list-item-content {
-                    margin-left: -25px;
-                }
-    
-                .env-name-wrapper {
-                    display: flex;
-                    align-items: center;
-
-                    .env-name {
-                        margin: 0;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-                }
 
                 &:hover .env-name {
                     font-style: italic;
@@ -106,7 +71,7 @@
         }
 
         .delete-icon {
-            display: none;
+            // display: none;
             margin-left: auto;
             cursor: pointer;
 
@@ -144,20 +109,6 @@
             mat-cell {
                 padding: 0 5px;
         
-                .config-text {
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-        
-                mat-form-field {
-                    width: 100%;
-
-                    .mat-form-field-infix {
-                        border-top-width: 1.1rem;
-                    }
-                }
-
                 &.remove {
                     max-width: 15px;
                     text-align: center;

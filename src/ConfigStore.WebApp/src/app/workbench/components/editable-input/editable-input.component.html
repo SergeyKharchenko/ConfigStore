@@ -1,5 +1,5 @@
 <div>
-  <div *ngIf='!editing' (dblclick)='onDblClick()'>
+  <div *ngIf='!editing' (dblclick)='onDblClick($event)' class="text">
     {{data}}
   </div>
 

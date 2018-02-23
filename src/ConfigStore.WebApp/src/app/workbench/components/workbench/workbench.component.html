@@ -1,6 +1,6 @@
 <div class="app-name-container">
   <h3 class="app-name">
-    <editable-input [(data)]='_application.applicationName' (changed)='onApplicationNameChanged($event)'></editable-input>
+    <editable-input [(data)]='application.applicationName' (changed)='onApplicationNameChanged($event.newValue)'></editable-input>
     <span *ngIf='loading' class="spinner">
       <mat-spinner [diameter]='25'></mat-spinner>
     </span>
@@ -13,27 +13,12 @@
 
     <mat-list>
       <h3 mat-subheader>Services</h3>
-      <mat-list-item *ngFor="let service of _application.services" class="service" (dblclick)='onServiceDblclicked(service)'>
+      <mat-list-item *ngFor="let service of application.services" class="service" (dblclick)='onServiceDblclicked(service)'>
         <mat-icon mat-list-icon class="service-icon">dvr</mat-icon>
 
         <div mat-line>
-          <div *ngIf="service === editedElement;then service_name_editor else service_name"></div>
-
-          <ng-template #service_name_editor>
-            <mat-form-field>
-              <input matInput autofocus [value]='service.serviceName' [(ngModel)]='service.serviceName' [ngModelOptions]="{updateOn: 'blur'}"
-                (ngModelChange)='onServiceNameChanged(service)' select (focusout)='onEditorFocusOut()' />
-            </mat-form-field>
-          </ng-template>
-
-          <ng-template #service_name>
-            <div class="service-name-wrapper">
-              <h4 class="service-name">
-                {{service.serviceName}}
-              </h4>
-              <mat-icon class='delete-icon' (click)='onDeleteServiceIconClick(service)'>delete</mat-icon>
-            </div>
-          </ng-template>
+            <editable-input [(data)]='service.serviceName' (changed)='onServiceNameChanged(service)'></editable-input>
+            <mat-icon class='delete-icon' (click)='onDeleteServiceIconClick(service)'>delete</mat-icon>
         </div>
 
         <mat-list mat-line dense *ngIf='service.environments && service.environments.length' class="envs">
@@ -42,22 +27,10 @@
             <mat-icon mat-list-icon class='logo-icon'>settings</mat-icon>
 
             <div mat-line>
-              <div *ngIf="env === editedElement;then env_name_editor else env_name"></div>
-
-              <ng-template #env_name_editor>
-                <mat-form-field>
-                  <input matInput autofocus [value]='env.environmentName' [(ngModel)]='env.environmentName' [ngModelOptions]="{updateOn: 'blur'}"
-                    (ngModelChange)='onEnvNameChanged(service, env)' select (focusout)='onEditorFocusOut()' />
-                </mat-form-field>
-              </ng-template>
-              <ng-template #env_name>
-                <div class="env-name-wrapper">
-                  <h4 class="env-name">
-                    {{env.environmentName}}
-                  </h4>
-                  <mat-icon class='delete-icon' (click)='onDeleteEnvIconClick(service, env)'>delete</mat-icon>
+                <div class="env-name">
+                  <editable-input [(data)]='env.environmentName' (changed)='onEnvNameChanged(service, env)'></editable-input>
                 </div>
-              </ng-template>
+                <mat-icon class='delete-icon' (click)='onDeleteEnvIconClick(service, env)'>delete</mat-icon>
             </div>
 
           </mat-list-item>
@@ -80,43 +53,14 @@
           <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
             <mat-cell *matCellDef="let config">
-
-              <div *ngIf="editedElement === config && activeConfigInputType === 'name';then config_name_editor else config_name"></div>
-
-              <ng-template #config_name_editor>
-                <mat-form-field>
-                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" ngModelEx
-                    (ngModelChangeEx)='onConfigNameChanged($event, config)' select (focusout)='onEditorFocusOut()' />
-                </mat-form-field>
-              </ng-template>
-
-              <ng-template #config_name>
-                <div class="config-text" (dblclick)='onConfigNameDblclick(config)'>
-                  {{config.name}}
-                </div>
-              </ng-template>
-
+              <editable-input [(data)]='config.name' (changed)='onConfigNameChanged($event, config)'></editable-input>
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="value">
             <mat-header-cell *matHeaderCellDef> Value </mat-header-cell>
             <mat-cell *matCellDef="let config">
-              <div *ngIf="editedElement === config && activeConfigInputType === 'value';then config_value_editor else config_value"></div>
-
-              <ng-template #config_value_editor>
-                <mat-form-field>
-                  <input matInput autofocus [value]='config.value' [(ngModel)]='config.value' [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigValueChanged(config)'
-                    select (focusout)='onEditorFocusOut()' />
-                </mat-form-field>
-              </ng-template>
-
-              <ng-template #config_value>
-                <div class="config-text" (dblclick)='onConfigValueDblclick(config)'>
-                  {{config.value}}
-                </div>
-              </ng-template>
-
+              <editable-input [(data)]='config.value' (changed)='onConfigValueChanged(config)'></editable-input>
             </mat-cell>
           </ng-container>
 

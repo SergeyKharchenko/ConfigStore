@@ -22,16 +22,14 @@ import { DomSanitizer } from '@angular/platform-browser';
     encapsulation: ViewEncapsulation.None
 })
 export class WorkbenchComponent implements OnInit {
-  _application: Application;
+  application: Application;
   activeServ: Service;
   activeEnv: Environment;
   activeConfigs: MatTableDataSource<Config>;
   loading: boolean;
-  editedElement: any;
-  activeConfigInputType: string;
 
   constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private matDialog: MatDialog, private _domSanitizer: DomSanitizer, route: ActivatedRoute) {
-    this._application = route.snapshot.data.application;
+    this.application = route.snapshot.data.application;
   }
 
   async ngOnInit() {
@@ -39,7 +37,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   private async selectFirstEnv() {
-    const serv = this._application.services && this._application.services[0];
+    const serv = this.application.services && this.application.services[0];
     if (!serv) {
       return;
     }
@@ -50,30 +48,21 @@ export class WorkbenchComponent implements OnInit {
     await this.loadConfigs(serv, env);
   }
 
-  async onApplicationNameChanged({ newValue }) {
-    await this._workbenchService.renameApplication(this._application.applicationKey, newValue);
-  }
-
-  onServiceDblclicked(service: Service) {
-    this.editedElement = service;
+  async onApplicationNameChanged(name) {
+    await this._workbenchService.renameApplication(this.application.applicationKey, name);
   }
 
   async onServiceNameChanged(service: Service) {
-    await this._workbenchService.renameService(this._application.applicationKey, service.serviceKey, service.serviceName);
+    await this._workbenchService.renameService(this.application.applicationKey, service.serviceKey, service.serviceName);
   }
 
   async onEnvClicked(serv: Service, env: Environment) {
     await this.loadConfigs(serv, env);
   }
 
-  onEnvDblclicked(e, env: Environment) {
-    e.stopPropagation();
-    this.editedElement = env;
-  }
-
   async onEnvNameChanged(serv: Service, env: Environment) {
     this.loading = true;
-    await this._workbenchService.renameEnvironment(this._application.applicationKey, serv.serviceKey, env.environmentKey, env.environmentName);
+    await this._workbenchService.renameEnvironment(this.application.applicationKey, serv.serviceKey, env.environmentKey, env.environmentName);
     this.loading = false;
   }
   
@@ -85,41 +74,27 @@ export class WorkbenchComponent implements OnInit {
     this.activeEnv = env;
     
     this.loading = true;
-    const configs = await this._workbenchService.getConfigs(this._application.applicationKey, serv.serviceKey, env.environmentKey);
+    const configs = await this._workbenchService.getConfigs(this.application.applicationKey, serv.serviceKey, env.environmentKey);
     this.activeConfigs = new MatTableDataSource<Config>(configs);
     this.loading = false;
   }
 
-  onConfigNameDblclick(config: Config) {
-    this.editedElement = config;
-    this.activeConfigInputType = 'name';
-  }
-
-  onConfigValueDblclick(config: Config) {
-    this.editedElement = config;
-    this.activeConfigInputType = 'value';
-  } 
-
-  onEditorFocusOut() {
-    this.editedElement = null;
-  }
-
   async onConfigNameChanged({oldValue}, config: Config) {
     this.loading = true;
-    await this._workbenchService.renameConfig(this._application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, oldValue, config);  
+    await this._workbenchService.renameConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, oldValue, config);  
     this.loading = false;
   }
 
   async onConfigValueChanged(config: Config) {
     this.loading = true;
-    await this._workbenchService.addOrUpdateConfig(this._application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, config);
+    await this._workbenchService.addOrUpdateConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, config);
     this.loading = false;
   }
 
   openAddDialog() {
     this.matDialog.open(AddDialogComponent, {
       width: '700px',
-      data: this._application
+      data: this.application
     }).afterClosed().subscribe(async (result: AddDialogResult) => {
       if (!result) {
         return;
@@ -132,15 +107,15 @@ export class WorkbenchComponent implements OnInit {
     this.loading = true;
     switch (result.type) {
       case ResourceTypes.Service: {
-        await this._workbenchService.addService(this._application.applicationKey, result.name);
+        await this._workbenchService.addService(this.application.applicationKey, result.name);
         break;
       }
       case ResourceTypes.Environment: {
-        await this._workbenchService.addEnvironment(this._application.applicationKey, result.service.serviceKey, result.name);
+        await this._workbenchService.addEnvironment(this.application.applicationKey, result.service.serviceKey, result.name);
         break;
       }
     }
-    this._application = await this._storageService.reloadApplication();
+    this.application = await this._storageService.reloadApplication();
     this.loading = false;
   }
 
@@ -176,17 +151,17 @@ export class WorkbenchComponent implements OnInit {
       this.loading = true;
       switch (data.type) {
         case ResourceTypes.Service: {
-          await this._workbenchService.removeService(this._application.applicationKey, data.service.serviceKey);
-          this._application.services.splice(this._application.services.indexOf(data.service), 1);
+          await this._workbenchService.removeService(this.application.applicationKey, data.service.serviceKey);
+          this.application.services.splice(this.application.services.indexOf(data.service), 1);
           break;
         }
         case ResourceTypes.Environment: {
-          await this._workbenchService.removeEnvironment(this._application.applicationKey, data.service.serviceKey, data.environment.environmentKey);
+          await this._workbenchService.removeEnvironment(this.application.applicationKey, data.service.serviceKey, data.environment.environmentKey);
           data.service.environments.splice(data.service.environments.indexOf(data.environment), 1);
           break;
         }
         case ResourceTypes.Config: {
-          await this._workbenchService.removeConfg(this._application.applicationKey, data.service.serviceKey, data.environment.environmentKey, data.config.name);
+          await this._workbenchService.removeConfg(this.application.applicationKey, data.service.serviceKey, data.environment.environmentKey, data.config.name);
           this.activeConfigs.data.splice(this.activeConfigs.data.indexOf(data.config), 1);
           this.activeConfigs._updateChangeSubscription();
           break;
@@ -199,7 +174,7 @@ export class WorkbenchComponent implements OnInit {
   onAddConfigButtonClick() {
     this.loading = true;
     const config = { name: `<config ${this.activeConfigs.data.length + 1}>`, value: '<value>' };
-    this._workbenchService.addOrUpdateConfig(this._application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, config);
+    this._workbenchService.addOrUpdateConfig(this.application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, config);
     this.activeConfigs.data.push(config);
     this.activeConfigs._updateChangeSubscription();
     this.loading = false;

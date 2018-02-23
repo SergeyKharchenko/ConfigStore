@@ -21,7 +21,8 @@ export class EditableInputComponent implements OnInit {
   ngOnInit() {
   }
 
-  onDblClick() {
+  onDblClick(e: MouseEvent) {
+    e.stopPropagation();
     this.editing = true;
   }
 
