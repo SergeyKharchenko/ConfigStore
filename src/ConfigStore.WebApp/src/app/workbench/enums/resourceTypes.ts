@@ -1,4 +1,5 @@
 export enum ResourceTypes {
     Service = 'Service',
-    Environment = 'Environment'
+    Environment = 'Environment',
+    Config = 'Config'
 }

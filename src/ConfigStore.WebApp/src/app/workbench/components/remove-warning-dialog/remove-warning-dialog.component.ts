@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { RemoveDialogArgs } from '../../models/removeDialogArgs';
+import { RemoveResourceArgs } from '../../models/removeResourceArgs';
 import { MAT_DIALOG_DATA } from '@angular/material';
-import { ResourceTypes } from '../../enums/resourceTypes';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-remove-warning-dialog',
@@ -9,9 +9,7 @@ import { ResourceTypes } from '../../enums/resourceTypes';
   styleUrls: ['./remove-warning-dialog.component.scss']
 })
 export class RemoveWarningDialogComponent implements OnInit {
-  ResourceTypes = ResourceTypes;
-
-  constructor(@Inject(MAT_DIALOG_DATA) private data: RemoveDialogArgs) { 
+  constructor(@Inject(MAT_DIALOG_DATA) private data: SafeHtml) { 
   }
 
   ngOnInit() {

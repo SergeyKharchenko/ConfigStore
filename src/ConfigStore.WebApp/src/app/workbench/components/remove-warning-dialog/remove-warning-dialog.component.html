@@ -3,8 +3,8 @@
 </div>
 
 <div mat-dialog-content>
-  Are you sure you want to delete
-  <span *ngIf='data.type === ResourceTypes.Service;then serv else env'></span>?
+  Are you sure you want to delete <span [innerHtml]="data"></span>
+  <!-- <span *ngIf='data.type === ResourceTypes.Service;then serv else env'></span>?
 
   <ng-template #serv>
     <b>{{data.service.serviceName}}</b> service
@@ -12,6 +12,7 @@
   <ng-template #env>
       <b>{{data.environment.environmentName}}</b> environment from <b>{{data.service.serviceName}}</b> service
   </ng-template>
+   -->
 </div>
 
 <div mat-dialog-actions>

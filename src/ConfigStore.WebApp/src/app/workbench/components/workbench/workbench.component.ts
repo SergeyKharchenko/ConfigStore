@@ -12,7 +12,8 @@ import { AddDialogComponent } from '../add-dialog/add-dialog.component';
 import { AddDialogResult } from '../../models/addDialogResult';
 import { ResourceTypes } from '../../enums/resourceTypes';
 import { RemoveWarningDialogComponent } from '../remove-warning-dialog/remove-warning-dialog.component';
-import { RemoveDialogArgs } from '../../models/removeDialogArgs';
+import { RemoveResourceArgs } from '../../models/removeResourceArgs';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-workbench',
@@ -29,7 +30,7 @@ export class WorkbenchComponent implements OnInit {
   editedElement: any;
   activeConfigInputType: string;
 
-  constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private matDialog: MatDialog, route: ActivatedRoute) {
+  constructor(private _workbenchService: WorkbenchService, private _storageService: StorageService, private matDialog: MatDialog, private _domSanitizer: DomSanitizer, route: ActivatedRoute) {
     this._application = route.snapshot.data.application;
   }
 
@@ -140,17 +141,30 @@ export class WorkbenchComponent implements OnInit {
   }
 
   async onDeleteServiceIconClick(serv: Service) {
-    await this.removeResource({ type: ResourceTypes.Service, service: serv });
+    await this.removeResource({
+      type: ResourceTypes.Service, service: serv, 
+      html: this._domSanitizer.bypassSecurityTrustHtml(`<b>${this.activeServ.serviceName}</b> service`)
+    });
   }
 
   async onDeleteEnvIconClick(serv: Service, env: Environment) {
-    await this.removeResource({ type: ResourceTypes.Environment, service: serv, environment: env });
+    await this.removeResource({
+      type: ResourceTypes.Environment, service: serv, environment: env,
+      html: this._domSanitizer.bypassSecurityTrustHtml(`<b>${this.activeEnv.environmentName}</b> environment from <b>${this.activeServ.serviceName}</b> service`)
+    });
   }
 
-  async removeResource(data: RemoveDialogArgs) {
+  async onDeleteConfigIconClick(config: Config) {
+    await this.removeResource({
+      type: ResourceTypes.Config, service: this.activeServ, environment: this.activeEnv, config,
+      html: this._domSanitizer.bypassSecurityTrustHtml(`<b>${config.name}</b> config from <b>${this.activeEnv.environmentName}</b> environment from <b>${this.activeServ.serviceName}</b> service`)
+    });
+  }
+
+  async removeResource(data: RemoveResourceArgs) {
     this.matDialog.open(RemoveWarningDialogComponent, {
       width: '700px',
-      data
+      data: data.html
     }).afterClosed().subscribe(async (result: boolean) => {
       if (!result) {
         return;
@@ -167,14 +181,14 @@ export class WorkbenchComponent implements OnInit {
           data.service.environments.splice(data.service.environments.indexOf(data.environment), 1);
           break;
         }
+        case ResourceTypes.Config: {
+          await this._workbenchService.removeConfg(this._application.applicationKey, data.service.serviceKey, data.environment.environmentKey, data.config.name);
+          this.activeConfigs.data.splice(this.activeConfigs.data.indexOf(data.config), 1);
+          this.activeConfigs._updateChangeSubscription();
+          break;
+        }
       }
       this.loading = false;
     });
-  }
-
-  async onDeleteConfigIconClick(config: Config) {
-    this.loading = true;
-    await this._workbenchService.removeConfg(this._application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, config.name);
-    this.loading = false;
   }
 }
