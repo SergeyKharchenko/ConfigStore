@@ -4,9 +4,16 @@
     justify-content: center;
 
     .app-name {
-        margin: auto;
+        margin: 0;
         padding: 10px;
         position: relative;
+        width: 250px;
+        font-weight: 400;
+        text-align: center;
+
+        input {
+            text-align: center;
+        }
 
         .spinner {
             position: absolute;

@@ -1,12 +1,12 @@
 <div class="app-name-container">
   <h3 class="app-name">
-    {{_application.applicationName}}
-
+    <editable-input [(data)]='_application.applicationName' (changed)='onApplicationNameChanged($event)'></editable-input>
     <span *ngIf='loading' class="spinner">
       <mat-spinner [diameter]='25'></mat-spinner>
     </span>
   </h3>
 </div>
+
 
 <div class="workbench">
   <div class="navigation">

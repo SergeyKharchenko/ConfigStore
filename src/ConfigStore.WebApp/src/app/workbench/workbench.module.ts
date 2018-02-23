@@ -22,6 +22,7 @@ import { WorkbenchGuard } from './guards/workbench.guard';
 import { NgModelExDirective } from './directives/ng-model-ex.directive';
 import { AddDialogComponent } from './components/add-dialog/add-dialog.component';
 import { RemoveWarningDialogComponent } from './components/remove-warning-dialog/remove-warning-dialog.component';
+import { EditableInputComponent } from './components/editable-input/editable-input.component';
 
 @NgModule({
   imports: [
@@ -41,7 +42,7 @@ import { RemoveWarningDialogComponent } from './components/remove-warning-dialog
     MatRadioModule,
     MatSelectModule
   ],  
-  declarations: [WorkbenchComponent, SelectInputDirective, NgModelExDirective, AddDialogComponent, RemoveWarningDialogComponent],
+  declarations: [WorkbenchComponent, SelectInputDirective, NgModelExDirective, AddDialogComponent, RemoveWarningDialogComponent, EditableInputComponent],
   providers: [StorageService, WorkbenchService, WorkbenchGuard],
   entryComponents: [AddDialogComponent, RemoveWarningDialogComponent]
 })

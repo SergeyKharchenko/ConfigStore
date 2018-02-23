@@ -1,0 +1,10 @@
+<div>
+  <div *ngIf='!editing' (dblclick)='onDblClick()'>
+    {{data}}
+  </div>
+
+  <mat-form-field *ngIf='editing'>
+    <input #input matInput autofocus select [value]='data' [(ngModel)]='data' [ngModelOptions]="{updateOn: 'blur'}" ngModelEx (ngModelChangeEx)='onDataChanged($event)'
+      (keyup)="onKeyUp($event)" (focusout)='onFocusOut()' />
+  </mat-form-field>
+</div>

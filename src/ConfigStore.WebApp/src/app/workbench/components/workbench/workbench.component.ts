@@ -50,6 +50,10 @@ export class WorkbenchComponent implements OnInit {
     await this.loadConfigs(serv, env);
   }
 
+  async onApplicationNameChanged({ newValue }) {
+    await this._workbenchService.renameApplication(this._application.applicationKey, newValue);
+  }
+
   onServiceDblclicked(service: Service) {
     this.editedElement = service;
   }

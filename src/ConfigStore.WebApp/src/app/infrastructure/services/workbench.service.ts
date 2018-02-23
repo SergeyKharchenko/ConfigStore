@@ -16,6 +16,10 @@ export class WorkbenchService extends HttpServiceBase {
     return result.reverse();
   }
 
+  async renameApplication(appKey: string, name: string): Promise<void> {
+    await this.requestVoid('application/rename', { key: appKey, name });
+  }
+
   async renameService(appKey: string, servKey: string, name: string): Promise<void> {
     const headers = this.buildHeaders(appKey);
     await this.requestVoid('service/rename', { key: servKey, name }, headers);

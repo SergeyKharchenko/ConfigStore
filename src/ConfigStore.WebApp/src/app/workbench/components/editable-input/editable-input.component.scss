@@ -1,0 +1,16 @@
+mat-form-field {
+    width: 100%;
+
+    .mat-form-field-wrapper {
+        padding: 0;
+    }
+
+    .mat-form-field-infix {
+        padding: 0;
+        border: none;
+    }
+
+    .mat-form-field-underline {
+        bottom: -10px;
+    }
+}
