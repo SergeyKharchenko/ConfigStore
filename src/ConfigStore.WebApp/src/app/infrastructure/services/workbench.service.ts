@@ -57,6 +57,11 @@ export class WorkbenchService extends HttpServiceBase {
     await this.requestVoid('environment/remove', { key: envKey }, headers);
   }
 
+  async removeConfg(appKey: string, servKey: string, envKey: string, name: string): Promise<void> {
+    const headers = this.buildHeaders(appKey, servKey, envKey);
+    await this.requestVoid('config/remove', { name }, headers);
+  }
+
   private buildHeaders(appKey?: string, servKey?: string, envKey?: string): { [name: string]: any } {
     const headers = {};
     if (appKey) {

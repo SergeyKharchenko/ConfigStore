@@ -152,6 +152,19 @@
                         border-top-width: 1.1rem;
                     }
                 }
+
+                &.remove {
+                    max-width: 15px;
+                    text-align: center;
+
+                    mat-icon {
+                        cursor: pointer;
+
+                        &:hover {
+                            color: red;
+                        }
+                    }
+                }
             }
         }
     }

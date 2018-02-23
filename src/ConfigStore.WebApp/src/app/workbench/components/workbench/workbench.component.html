@@ -1,6 +1,6 @@
 <div class="app-name-container">
   <h3 class="app-name">
-    {{application.applicationName}}
+    {{_application.applicationName}}
 
     <span *ngIf='loading' class="spinner">
       <mat-spinner [diameter]='25'></mat-spinner>
@@ -13,7 +13,7 @@
 
     <mat-list>
       <h3 mat-subheader>Services</h3>
-      <mat-list-item *ngFor="let service of application.services" class="service" (dblclick)='onServiceDblclicked(service)'>
+      <mat-list-item *ngFor="let service of _application.services" class="service" (dblclick)='onServiceDblclicked(service)'>
         <mat-icon mat-list-icon class="service-icon">dvr</mat-icon>
     
         <div mat-line>
@@ -122,8 +122,15 @@
             </mat-cell>
           </ng-container>
 
-          <mat-header-row *matHeaderRowDef="['name', 'value']"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: ['name', 'value'];"></mat-row>
+          <ng-container matColumnDef="remove">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell class="remove" *matCellDef="let config">
+              <mat-icon (click)='onDeleteConfigIconClick(config)'>delete</mat-icon>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="['name', 'value', 'remove']"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['name', 'value', 'remove'];"></mat-row>
         </mat-table>
       </div>
 

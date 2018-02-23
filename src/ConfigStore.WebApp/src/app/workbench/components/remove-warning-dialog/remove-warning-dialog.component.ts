@@ -11,7 +11,8 @@ import { ResourceTypes } from '../../enums/resourceTypes';
 export class RemoveWarningDialogComponent implements OnInit {
   ResourceTypes = ResourceTypes;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: RemoveDialogArgs) { }
+  constructor(@Inject(MAT_DIALOG_DATA) private data: RemoveDialogArgs) { 
+  }
 
   ngOnInit() {
   }

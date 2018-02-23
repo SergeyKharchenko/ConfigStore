@@ -7,10 +7,10 @@
   <span *ngIf='data.type === ResourceTypes.Service;then serv else env'></span>?
 
   <ng-template #serv>
-    service
+    <b>{{data.service.serviceName}}</b> service
   </ng-template>
   <ng-template #env>
-    environment
+      <b>{{data.environment.environmentName}}</b> environment from <b>{{data.service.serviceName}}</b> service
   </ng-template>
 </div>
 
