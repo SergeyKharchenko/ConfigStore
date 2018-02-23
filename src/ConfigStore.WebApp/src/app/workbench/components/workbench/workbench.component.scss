@@ -124,8 +124,6 @@
         }
     }
 
-    
-
     .configs-wrapper {
         flex-grow: 1;
         min-width: 0;  
@@ -166,6 +164,11 @@
                     }
                 }
             }
+        }
+
+        .add-config-button {
+            margin-top: 10px;
+            color: #3f51b5;
         }
     }
 }

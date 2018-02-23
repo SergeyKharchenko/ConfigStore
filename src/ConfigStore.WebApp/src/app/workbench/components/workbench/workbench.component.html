@@ -15,17 +15,17 @@
       <h3 mat-subheader>Services</h3>
       <mat-list-item *ngFor="let service of _application.services" class="service" (dblclick)='onServiceDblclicked(service)'>
         <mat-icon mat-list-icon class="service-icon">dvr</mat-icon>
-    
+
         <div mat-line>
           <div *ngIf="service === editedElement;then service_name_editor else service_name"></div>
-    
+
           <ng-template #service_name_editor>
             <mat-form-field>
               <input matInput autofocus [value]='service.serviceName' [(ngModel)]='service.serviceName' [ngModelOptions]="{updateOn: 'blur'}"
                 (ngModelChange)='onServiceNameChanged(service)' select (focusout)='onEditorFocusOut()' />
             </mat-form-field>
           </ng-template>
-    
+
           <ng-template #service_name>
             <div class="service-name-wrapper">
               <h4 class="service-name">
@@ -35,15 +35,15 @@
             </div>
           </ng-template>
         </div>
-    
+
         <mat-list mat-line dense *ngIf='service.environments && service.environments.length' class="envs">
           <mat-list-item *ngFor="let env of service.environments" class="env" [class.active]='env === activeEnv' (click)='onEnvClicked(service, env)'
             (dblclick)='onEnvDblclicked($event, env)'>
             <mat-icon mat-list-icon class='logo-icon'>settings</mat-icon>
-    
+
             <div mat-line>
               <div *ngIf="env === editedElement;then env_name_editor else env_name"></div>
-    
+
               <ng-template #env_name_editor>
                 <mat-form-field>
                   <input matInput autofocus [value]='env.environmentName' [(ngModel)]='env.environmentName' [ngModelOptions]="{updateOn: 'blur'}"
@@ -59,18 +59,18 @@
                 </div>
               </ng-template>
             </div>
-      
+
           </mat-list-item>
         </mat-list>
-      
+
       </mat-list-item>
-      
+
       <button mat-subheader mat-button class="add-button" (click)='openAddDialog()'>
         <mat-icon>add</mat-icon>
         <span>Add</span>
       </button>
-      </mat-list>
-      </div>
+    </mat-list>
+  </div>
 
   <div class="configs-wrapper">
     <div *ngIf='activeConfigs' class="configs">
@@ -85,10 +85,8 @@
 
               <ng-template #config_name_editor>
                 <mat-form-field>
-                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" 
-                    ngModelEx 
-                    (ngModelChangeEx)='onConfigNameChanged($event, config)'
-                    select (focusout)='onEditorFocusOut()' />
+                  <input matInput autofocus [value]='config.name' [(ngModel)]='config.name' [ngModelOptions]="{updateOn: 'blur'}" ngModelEx
+                    (ngModelChangeEx)='onConfigNameChanged($event, config)' select (focusout)='onEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
 
@@ -108,7 +106,7 @@
 
               <ng-template #config_value_editor>
                 <mat-form-field>
-                  <input matInput autofocus [value]='config.value' [(ngModel)]='config.value'  [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigValueChanged(config)'
+                  <input matInput autofocus [value]='config.value' [(ngModel)]='config.value' [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)='onConfigValueChanged(config)'
                     select (focusout)='onEditorFocusOut()' />
                 </mat-form-field>
               </ng-template>
@@ -133,6 +131,11 @@
           <mat-row *matRowDef="let row; columns: ['name', 'value', 'remove'];"></mat-row>
         </mat-table>
       </div>
+
+      <button mat-subheader mat-button class="add-config-button" (click)='onAddConfigButtonClick()'>
+        <mat-icon>add</mat-icon>
+        <span>Add config</span>
+      </button>
 
     </div>
   </div>

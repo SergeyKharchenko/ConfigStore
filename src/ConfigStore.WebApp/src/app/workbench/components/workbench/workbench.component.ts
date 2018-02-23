@@ -191,4 +191,13 @@ export class WorkbenchComponent implements OnInit {
       this.loading = false;
     });
   }
+
+  onAddConfigButtonClick() {
+    this.loading = true;
+    const config = { name: `<config ${this.activeConfigs.data.length + 1}>`, value: '<value>' };
+    this._workbenchService.addOrUpdateConfig(this._application.applicationKey, this.activeServ.serviceKey, this.activeEnv.environmentKey, config);
+    this.activeConfigs.data.push(config);
+    this.activeConfigs._updateChangeSubscription();
+    this.loading = false;
+  }
 }
