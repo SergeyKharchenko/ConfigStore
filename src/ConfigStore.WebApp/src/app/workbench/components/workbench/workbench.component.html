@@ -33,7 +33,7 @@
       </mat-list>
     </div>
 
-    <button mat-subheader mat-button class="add-button" (click)='openAddDialog()'>
+    <button mat-button (click)='openAddDialog()'>
         <mat-icon>add</mat-icon>
         <span>Add</span>
       </button>
@@ -59,8 +59,8 @@
           </ng-container>
 
           <ng-container matColumnDef="remove">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell class="remove" *matCellDef="let config">
+            <mat-header-cell *matHeaderCellDef class="remove"></mat-header-cell>
+            <mat-cell *matCellDef="let config" class="remove" >
               <mat-icon (click)='onDeleteConfigIconClick(config)'>clear</mat-icon>
             </mat-cell>
           </ng-container>
@@ -70,7 +70,7 @@
         </mat-table>
       </div>
 
-      <button mat-subheader mat-button class="add-config-button" (click)='onAddConfigButtonClick()'>
+      <button mat-button class="add-config-button" (click)='onAddConfigButtonClick()'>
         <mat-icon>add</mat-icon>
         <span>Add config</span>
       </button>

@@ -1,22 +1,24 @@
-.text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-mat-form-field {
-    width: 100%;
-
-    .mat-form-field-wrapper {
-        padding: 0;
+.editable-input {
+    .text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-
-    .mat-form-field-infix {
-        padding: 0;
-        border: none;
-    }
-
-    .mat-form-field-underline {
-        bottom: -10px;
+    
+    mat-form-field {
+        width: 100%;
+    
+        .mat-form-field-wrapper {
+            padding: 0;
+        }
+    
+        .mat-form-field-infix {
+            padding: 0;
+            border: none;
+        }
+    
+        .mat-form-field-underline {
+            bottom: 0;
+        }
     }
 }

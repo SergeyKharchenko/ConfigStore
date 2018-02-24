@@ -24,6 +24,10 @@ $separator: 10px;
         input {
             text-align: center;
         }
+
+        .mat-form-field-underline {
+            bottom: -5px;
+        }
     }
         
     .spinner {
@@ -69,13 +73,6 @@ $separator: 10px;
     .env:hover .delete-icon {
         display: inline-block;
     }
-    
-    .add-button {
-        min-width: 40px;
-        height: 32px;
-        padding-top: 0;
-        padding-bottom: 0;
-    }
 }
 
 .configs-wrapper {
@@ -89,21 +86,22 @@ $separator: 10px;
 
         mat-cell {
             padding: 0 5px;
+        }
+    }
 
-            &.remove {
-                max-width: 15px;
-                text-align: center;
+    mat-cell.remove, mat-header-cell.remove {
+        max-width: 15px;
+        text-align: center;
 
-                mat-icon {
-                    cursor: pointer;
+        mat-icon {
+            cursor: pointer;
 
-                    &:hover {
-                        color: red;
-                    }
-                }
+            &:hover {
+                color: red;
             }
         }
     }
+
     .add-config-button {
         margin-top: 10px;
         color: #3f51b5;
