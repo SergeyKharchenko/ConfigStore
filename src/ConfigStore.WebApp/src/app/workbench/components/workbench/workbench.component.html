@@ -1,52 +1,46 @@
-<div class="app-name-container">
-  <h3 class="app-name">
-    <editable-input [(data)]='application.applicationName' (changed)='onApplicationNameChanged($event.newValue)'></editable-input>
+<div class="grid">
+  <div class="header">
+    <h3 class="app-name">
+      <editable-input [(data)]='application.applicationName' (changed)='onApplicationNameChanged($event.newValue)'></editable-input>
+    </h3>
     <span *ngIf='loading' class="spinner">
       <mat-spinner [diameter]='25'></mat-spinner>
     </span>
-  </h3>
-</div>
+  </div>
 
 
-<div class="workbench">
   <div class="navigation">
 
-    <mat-list>
-      <h3 mat-subheader>Services</h3>
-      <mat-list-item *ngFor="let service of application.services" class="service" (dblclick)='onServiceDblclicked(service)'>
-        <mat-icon mat-list-icon class="service-icon">dvr</mat-icon>
-
-        <div mat-line>
+    <div *ngFor="let service of application.services">
+      <mat-list>
+        <mat-list-item class="service">
+          <mat-icon mat-list-icon class="service-icon">dvr</mat-icon>
+          <div mat-line>
             <editable-input [(data)]='service.serviceName' (changed)='onServiceNameChanged(service)'></editable-input>
-            <mat-icon class='delete-icon' (click)='onDeleteServiceIconClick(service)'>delete</mat-icon>
-        </div>
+          </div>
+          <mat-icon mat-list-icon class='delete-icon' (click)='onDeleteEnvIconClick(service, env)'>clear</mat-icon>
+        </mat-list-item>
+      </mat-list>
+    
+      <mat-list mat-line dense *ngIf='service.environments && service.environments.length' class="envs">
+        <mat-list-item *ngFor="let env of service.environments" class="env" [class.active]='env === activeEnv' (click)='onEnvClicked(service, env)'>
+          <mat-icon mat-list-icon class='logo-icon'>settings</mat-icon>
+          <div mat-line>
+              <editable-input class="env-name" [(data)]='env.environmentName' (changed)='onEnvNameChanged(service, env)'></editable-input>
+          </div>
+          <mat-icon mat-list-icon class='delete-icon' (click)='onDeleteEnvIconClick(service, env)'>clear</mat-icon>
+        </mat-list-item>
+      </mat-list>
+    </div>
 
-        <mat-list mat-line dense *ngIf='service.environments && service.environments.length' class="envs">
-          <mat-list-item *ngFor="let env of service.environments" class="env" [class.active]='env === activeEnv' (click)='onEnvClicked(service, env)'
-            (dblclick)='onEnvDblclicked($event, env)'>
-            <mat-icon mat-list-icon class='logo-icon'>settings</mat-icon>
-
-            <div mat-line>
-                <div class="env-name">
-                  <editable-input [(data)]='env.environmentName' (changed)='onEnvNameChanged(service, env)'></editable-input>
-                </div>
-                <mat-icon class='delete-icon' (click)='onDeleteEnvIconClick(service, env)'>delete</mat-icon>
-            </div>
-
-          </mat-list-item>
-        </mat-list>
-
-      </mat-list-item>
-
-      <button mat-subheader mat-button class="add-button" (click)='openAddDialog()'>
+    <button mat-subheader mat-button class="add-button" (click)='openAddDialog()'>
         <mat-icon>add</mat-icon>
         <span>Add</span>
       </button>
-    </mat-list>
   </div>
 
   <div class="configs-wrapper">
-    <div *ngIf='activeConfigs' class="configs">
+    <div *ngIf='activeConfigs' class="configs"> 
       <div class="mat-elevation-z8">
         <mat-table #table [dataSource]="activeConfigs">
 
@@ -67,7 +61,7 @@
           <ng-container matColumnDef="remove">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell class="remove" *matCellDef="let config">
-              <mat-icon (click)='onDeleteConfigIconClick(config)'>delete</mat-icon>
+              <mat-icon (click)='onDeleteConfigIconClick(config)'>clear</mat-icon>
             </mat-cell>
           </ng-container>
 
@@ -82,6 +76,6 @@
       </button>
 
     </div>
-  </div>
 
+  </div>
 </div>

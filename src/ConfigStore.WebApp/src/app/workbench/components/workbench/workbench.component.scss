@@ -1,132 +1,111 @@
-.app-name-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+$separator: 10px;
+
+.grid {
+    display: grid;
+    height: 100vh;
+    grid: auto $separator 1fr / #{$separator} 30% $separator 1fr $separator;
+    grid-template-areas: 
+        ". header header header ." 
+        ". . . . ." 
+        ". navigation . configs .";
+}
+
+.header {
+    grid-area: header;
+    display: grid;
+    grid: 1fr / 1fr $separator 50px;
+    grid-template-areas: "app-name . loader .";
 
     .app-name {
-        margin: 0;
-        padding: 10px;
-        position: relative;
-        width: 250px;
+        grid-area: app-name;
+        justify-self: center;
         font-weight: 400;
-        text-align: center;
-
+        
         input {
             text-align: center;
         }
-
-        .spinner {
-            position: absolute;
-            right: -25px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
+    }
+        
+    .spinner {
+        grid-area: loader;
+        align-self: center;
+        justify-content: center; 
     }
 }
 
-.workbench {
-    display: flex;
+.navigation {
+    grid-area: navigation;
 
-    .navigation {
-        width: 30%;
+    .envs {
+        padding-left: 35px;
 
-        .mat-list-item.service {
-            height: unset;
-
-            .service-icon {
-                align-self: start;
-                padding: 4px;
-            }
-
-            .mat-input-wrapper {
-                padding: 0;
-
-                .mat-form-field-infix {
-                    border-top: none;
-                }
-
-                .mat-form-field-underline {
-                    bottom: 0;
-                }
-            }
-        }
-
-        .envs {
-            overflow: unset;
-
-            .env {
-                cursor: pointer;
-
-                &:hover .env-name {
-                    font-style: italic;
-                    text-shadow: 0 0 0.65px #1cd2ef, 0 0 0.65px #34c4f0;
-                }
-    
-                &.active .env-name {
-                    font-style: italic;
-                    text-shadow: 0 0 .65px #333, 0 0 .65px #333;
-                    cursor: default;
-                }
-            }
-        }
-
-        .delete-icon {
-            // display: none;
-            margin-left: auto;
+        .env {
             cursor: pointer;
-
-            &:hover {
-                color: red;
+            &:hover .env-name {
+                font-style: italic;
+                text-shadow: 0 0 0.65px #1cd2ef, 0 0 0.65px #34c4f0;
             }
-        }
-
-        .service-name-wrapper:hover .delete-icon, .env-name-wrapper:hover .delete-icon {
-            display: inline-block;
-        }
-
-        .env-name-wrapper:hover .delete-icon {
-            display: inline-block;
-        }
-
-        .add-button {
-            min-width: 40px;
-            height: 32px;
-            padding-top: 0;
-            padding-bottom: 0;   
+            &.active .env-name {
+                font-style: italic;
+                text-shadow: 0 0 .65px #333, 0 0 .65px #333;
+                cursor: default;
+            }
         }
     }
 
-    .configs-wrapper {
-        flex-grow: 1;
-        min-width: 0;  
-        padding: 10px;
-        margin-top: 50px;
+    .delete-icon {
+        display: none;
+        order: 1;
+        text-align: center;
+        font-size: 20px !important;
+        cursor: pointer;
 
-        mat-row {
-            height: 48px;
-            cursor: default;
+        &:hover {
+            color: red;
+        }
+    }
 
-            mat-cell {
-                padding: 0 5px;
-        
-                &.remove {
-                    max-width: 15px;
-                    text-align: center;
+    .service:hover .delete-icon,
+    .env:hover .delete-icon {
+        display: inline-block;
+    }
+    
+    .add-button {
+        min-width: 40px;
+        height: 32px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
 
-                    mat-icon {
-                        cursor: pointer;
+.configs-wrapper {
+    grid-area: configs;
+    padding-top: 20px;
+    min-width: 0;
 
-                        &:hover {
-                            color: red;
-                        }
+    mat-row {
+        height: 48px;
+        cursor: default;
+
+        mat-cell {
+            padding: 0 5px;
+
+            &.remove {
+                max-width: 15px;
+                text-align: center;
+
+                mat-icon {
+                    cursor: pointer;
+
+                    &:hover {
+                        color: red;
                     }
                 }
             }
         }
-
-        .add-config-button {
-            margin-top: 10px;
-            color: #3f51b5;
-        }
+    }
+    .add-config-button {
+        margin-top: 10px;
+        color: #3f51b5;
     }
 }
