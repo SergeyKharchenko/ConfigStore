@@ -13,15 +13,17 @@ body {
 	position: relative;
 	padding-top: 80px;
 }
+.is-hidden{
+	display: none;
+}
 .top-line{
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	height: 50px;
-	background-color: #fff;
-	opacity: 0.5;
- }
+	background-color: rgba(#fff, .5);
+}
 .right-line{
 	position: absolute;
 	top: 0;
@@ -29,7 +31,7 @@ body {
 	height: 100%;
 	width: 50px;
 	background-color: #fff;
-	opacity: 0.5;
+	background-color: rgba(#fff, .5);
 }
 .wrapper{
 	width: 960px;
@@ -63,13 +65,6 @@ input, button {
 		@content;
 	}
 }
-
-//.tip {
-//	font-size: 20px;
-//	margin: 40px auto 50px;
-//	text-align: left;
-//}
-
 
 .cont {
 	overflow: hidden;
@@ -247,13 +242,13 @@ h2 {
 	text-align: center;
 }
 
-label {
+.reg{
 	display: block;
 	width: $inputW;
 	margin: 25px auto 0;
-	text-align: center;
+	//text-align: center;
 
-	span {
+	label {
 		font-size: 12px;
 		color: #cfcfcf;
 		text-transform: uppercase;
@@ -270,8 +265,8 @@ input {
 	text-align: center;
 }
 
-.forgot-pass {
-	margin-top: 15px;
+.hint {
+	margin-top: 5px;
 	text-align: center;
 	font-size: 12px;
 	color: #cfcfcf;
@@ -284,7 +279,7 @@ input {
 	text-transform: uppercase;
 }
 
-.sign-in {
+.log-in {
 	transition-timing-function: ease-out;
 
 	@include signUpActive {
@@ -302,3 +297,86 @@ input {
 	}
 }
 
+.group-key{
+	display: none;
+}
+
+.reg{
+	position: relative;
+	display: block;
+	.load{
+		position: absolute;
+		right: 0;
+		top: 17px;
+		color: #5d71ff;
+		display: none;
+	}
+	.done{
+		position: absolute;
+		right: 0;
+		top: 17px;
+		color: green;
+		display: none;
+	}
+	.not-done{
+		position: absolute;
+		right: 0;
+		top: 17px;
+		color: red;
+		display: none;
+	}
+}
+
+@mixin transition($transition) {
+	transition: $transition;
+}
+
+@mixin transform($transform) {
+	transform: $transform;
+}
+
+.input-group {
+	width: 100%;
+	font-size: 16px;
+	max-width: 400px;
+	padding-top: 20px;
+	position: relative;
+	margin-bottom: 15px;
+
+	input {
+		width: 100%;
+		color: #000;
+		border: none;
+		outline: none;
+		padding: 5px 0;
+		line-height: 1;
+		font-size: 16px;
+		font-family: 'Raleway';
+		border-bottom: solid 1px #000;
+		background-color: transparent;
+		transition: box-shadow 0.2s ease-in;
+
+		+ label {
+			font-size: 14px;
+			color: #939393;
+			left: 0;
+			top: 20px;
+			position: absolute;
+			pointer-events: none;
+			transition: all 0.2s ease-in;
+		}
+
+		&:focus {
+			border-bottom: solid 1px $accent-color;
+			box-shadow: 0 1px 0 0 $accent-color;
+		}
+
+		&:focus,
+		&.active {
+			+ label {
+				font-size: 12px;
+				transform: translateY(-5px);
+			}
+		}
+	}
+}

@@ -15,31 +15,31 @@
     </div>
 </div>
 <div class="right-line"></div>
-
+<!--././.-->
 <div class="cont">
-    <div class="form sign-in">
+    <div class="form log-in">
+        <h2>LOGIN</h2>
+        <!--<h3>Manage your application configuration in lightweight secure way</h3>-->
+        <div class="input-group">
+            <input type="text" class="app-name" id="app-name"/>
+            <label for="app-name">Application name</label>
+        </div>
+
+
+
+
         <label>
             <span>Application key</span>
-            <input type="text" />
+            <input type="text" class="app-key"/>
         </label>
-        <p class="forgot-pass">or register new app</p>
-        <label>
-            <span>Application name</span>
-            <input type="text" />
-        </label>
-        <p class="forgot-pass">Forgot password?</p>
-        <label>
-            <span>Application key</span>
-            <input type="text" />
-        </label>
-        <p class="forgot-pass">????</p>
-        <button type="button" class="submit">login in</button>
+        <p class="hint">your key after registration</p>
+        <button type="button" class="submit btn-log-in">login</button>
     </div>
     <div class="sub-cont">
         <div class="img">
             <div class="img__text m--up">
                 <h2>Welcome to...</h2>
-                <p>login to access your account</p>
+                <p>You don't hav account?</p>
             </div>
             <div class="img__text m--in">
                 <h2>One of us?</h2>
@@ -51,20 +51,22 @@
             </div>
         </div>
         <div class="form sign-up">
-            <h2>Time to feel like home,</h2>
-            <label>
-                <span>Name</span>
-                <input type="text" />
+            <h2>Registration</h2>
+            <div class="input-group">
+                <input type="text" class="app-name-reg" id="app-name-reg"/>
+                <label for="app-name-reg">App name</label>
+                <i class="fa fa-spinner fa-pulse fa-fw load"></i>
+                <i class="fa fa-check done"></i>
+                <i class="fa fa-thumbs-o-down not-done"></i>
+            </div>
+            <label class="group-key">
+                <span>App key</span>
+                <input type="text" class="app-key-reg"/>
             </label>
-            <label>
-                <span>Email</span>
-                <input type="email" />
-            </label>
-            <label>
-                <span>Password</span>
-                <input type="password" />
-            </label>
-            <button type="button" class="submit">Sign Up</button>
+
+
+            <button type="button" class="submit btn-registr">registration</button>
+            <input type="text" class="hint"/>
         </div>
     </div>
 </div>
@@ -73,3 +75,4 @@
 <script src="js/bundle.js"></script>
 </body>
 </html>
+
