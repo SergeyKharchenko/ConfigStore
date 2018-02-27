@@ -1,0 +1,213 @@
+$accentColor: #C7DDE2;
+$contentWidth: 700px;
+$imgWidth: 300px;
+$formWidth: $contentWidth - $imgWidth;
+$switchDuration: .5s;
+$switchButtonHeight: 36px;
+$diffRatio: ($contentWidth - $imgWidth) / $contentWidth;
+
+
+@mixin registerActive {
+    .register & {
+        @content;
+    }
+}
+
+.body {
+    height: 100vh;
+    font-size: 16px;
+    background: url("/assets/images/bg.png") center no-repeat;
+    background-size: cover;
+    position: relative;
+    padding-top: 80px;
+}
+
+.top-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: rgba(#fff, .5);
+
+	.logo-wrapper {
+		width: 960px;
+		margin: 0 auto;
+	
+		.logo {
+			font-size: 30px;
+			font-weight: bold;
+			width: 100px;
+			height: 50px;
+			img {
+				width: 100%;
+				height: auto;
+			}
+		}
+	}
+}
+
+.content {
+    overflow: hidden;
+    position: relative;
+    width: $contentWidth;
+    height: 520px;
+    margin: 0px auto;
+    background: #fff;
+}
+
+.form {
+    position: relative;
+    width: $formWidth;
+    height: 100%;
+    transition: transform $switchDuration ease-in-out;
+    padding: 50px 30px 0;
+}
+
+.sub-content {
+    overflow: hidden;
+    position: absolute;
+    left: $formWidth;
+    top: 0;
+    width: $contentWidth;
+    height: 100%;
+    padding-left: $imgWidth;
+    background: #fff;
+    transition: transform $switchDuration ease-in-out;
+    @include registerActive {
+        transform: translate3d($formWidth * -1, 0, 0);
+    }
+}
+
+.img {
+    overflow: hidden;
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: $imgWidth;
+    height: 100%;
+    padding-top: 360px;
+    &:before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: $contentWidth;
+        height: 100%;
+        background-image: url('/assets/images/form-bg.jpg');
+        background-size: cover;
+        transition: transform $switchDuration ease-in-out;
+    }
+    &:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0; 
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.1);
+    }
+    @include registerActive {
+        &:before {
+            transform: translate3d($formWidth, 0, 0);
+        }
+    }
+    &__text {
+        z-index: 2;
+        position: absolute;
+        left: 0;
+        top: 50px;
+        width: 100%;
+        padding: 0 20px;
+        text-align: center;
+        color: #fff;
+        transition: transform $switchDuration ease-in-out;
+        h2 {
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        &.to-register {
+            @include registerActive {
+                transform: translateX($imgWidth*2);
+            }
+        }
+        &.to-login {
+            transform: translateX($imgWidth * -2);
+            @include registerActive {
+                transform: translateX(0);
+            }
+        }
+    }
+    &__btn {
+        overflow: hidden;
+        z-index: 2;
+        position: relative;
+        width: 100px;
+        height: $switchButtonHeight;
+        margin: 0 auto;
+        background: transparent;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 15px;
+        cursor: pointer;
+        &:after {
+            content: '';
+            z-index: 2;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #fff;
+        }
+        span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            transition: transform $switchDuration;
+            &.to-login {
+                transform: translateY($switchButtonHeight*-2);
+                @include registerActive {
+                    transform: translateY(0);
+                }
+            }
+            &.to-register {
+                @include registerActive {
+                    transform: translateY($switchButtonHeight*2);
+                }
+            }
+        }
+    }
+}
+
+h2 {
+    width: 100%;
+    font-size: 26px;
+    text-align: center;
+}
+
+.log-in {
+    transition-timing-function: ease-out;
+    @include registerActive {
+        transition-timing-function: ease-in-out;
+        transition-duration: $switchDuration;
+        transform: translate3d($formWidth, 0, 0);
+    }
+}
+
+.sign-up {
+    transform: translate3d($contentWidth * -1, 0, 0);
+    @include registerActive {
+        transform: translate3d(0, 0, 0);
+    }
+}

@@ -1,0 +1,44 @@
+<div class="body">
+  <div class="top-line">
+    <div class="logo-wrapper">
+      <div class="logo">
+        <img src="/assets/images/logo.svg" alt="">
+      </div>
+    </div>
+  </div>
+
+  <div class="content" [class.register]="onRegister">
+    <div class="form log-in">
+      <h2>LOGIN</h2>
+      <!-- <h3>Manage your application configuration in lightweight secure way</h3> -->
+      
+      <label>
+        <span>Application key</span>
+        <input type="text" class="app-key" />
+      </label>
+      <button type="button">login</button>
+    </div>
+    <div class="sub-content">
+      <div class="img">
+        <div class="img__text to-register">
+          <h2>Welcome to...</h2>
+          <p>You don't hav account?</p>
+        </div>
+        <div class="img__text to-login">
+          <h2>One of us?</h2>
+          <p>If you already has an account, just login.</p>
+        </div>
+        <div class="img__btn" (click)='changeView()'>
+          <span class="to-register">Register</span>
+          <span class="to-login">Login</span>
+        </div>
+      </div>
+      <div class="form sign-up">
+        <h2>Registration</h2>
+
+        <button type="button">registration</button>
+        <input type="text" class="hint" />
+      </div>
+    </div>
+  </div>
+</div>
